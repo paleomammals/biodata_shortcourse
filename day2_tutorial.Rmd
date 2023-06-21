@@ -1,0 +1,37 @@
+---
+title: "Day 2"
+author: "Val Syverson"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Part 1. Mathematical modeling
+
+First make sure your variables from yesterday are loaded.
+```{r}
+load(file="day1.RData")
+```
+
+We're going to use the `bioclim` climatic data and the `data` file you constructed to model the influence of the climate variables on your species' range. 
+
+First, get the value of each of the 19 climate variables at the location of each of the species occurrences with the function `extract` from the `raster` package. This function takes two arguments, a RasterStack and a set of coordinates (GPS points), and returns 
+```{r}
+presvals<-extract(bioclim, data[,c("lon","lat")])
+dim(presvals)
+head(presvals)
+```
+
+You can see that the dimension
+```{r}
+set.seed(0)
+backgr <- randomPoints(bioclim, min(c(nrow(data),500)))
+absvals <- extract(bioclim, backgr)
+pb <- c(rep(1, nrow(presvals)), rep(0, nrow(absvals)))
+sdmdata <- data.frame(cbind(pb, rbind(presvals, absvals)))
+```
+
+

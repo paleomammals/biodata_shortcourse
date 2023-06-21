@@ -1,0 +1,5 @@
+install.packages("dismo")
+install.packages("maptools")
+install.packages("sf")
+install.packages("concaveman")
+install.packages("raster")
