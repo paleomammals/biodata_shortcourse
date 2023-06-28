@@ -11,6 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Part 1. Mathematical modeling
 
+<<<<<<< HEAD
 First make sure your workspace from yesterday is loaded: go to the Documents folder, choose the .Rdata file that you saved yesterday afternoon, and open it in RStudio. It should look exactly like it did yesterday when you left it.
 
 Run the package installation script again and load the packages you need for this morning.
