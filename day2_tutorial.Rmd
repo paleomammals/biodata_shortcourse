@@ -1,0 +1,349 @@
+---
+title: "Day 2"
+author: "Val Syverson"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Part 1. Mathematical modeling
+
+First make sure your workspace from yesterday is loaded: go to the Documents folder, choose the .Rdata file that you saved yesterday afternoon, and open it in RStudio. It should look exactly like it did yesterday when you left it.
+
+Run the package installation script again and load the packages you need for this morning.
+
+```{r,eval=F}
+source("installscript.R")
+```
+
+```{r,echo=F}
+load(file="day1.RData")
+```
+
+```{r}
+require(raster);require(dismo)
+```
+
+We're going to use the climate data you downloaded and the species occurrence data you constructed to model the influence of the climate variables on your species' range.
+
+## Predicting species presence from climate variables
+
+Climate envelope species distribution models describe the climate where a species currently lives (its climate "envelope") based on the values at all its known occurrences, and then use that to predict the suitability of all the other places. We'll try two different ways of making a climate envelope model.
+
+### Bioclim model
+
+Now we can use the function `bioclim` to make a climate envelope model for the species distribution. The Bioclim model, specifically, compares the values of the climate variables at each point on the map to the values at the locations where the species is known to occur.
+
+```{r}
+m1<-bioclim(climate,df[,c("lon","lat")])
+```
+
+Now that we have the relationship between climate variables and your species, we can predict its likelihood of occurring for *every* point on the map using the `predict` function.
+
+```{r}
+p<-predict(climate,m1,progress="text")
+```
+
+We can plot this just like we plotted the bioclim environmental layers:
+
+```{r}
+plot(p, main="Bioclim model")
+```
+
+The suitability score goes from 0 to 1. A point that had a suitability of 1 would have all its climate values exactly at the median values for the occurrence points, so that doesn't usually happen; the highest values in this one are around 0.6.
+
+This model seems to think that giant anteaters' most suitable habitat is all the areas in the world with tropical rainforest. Let's zoom the map in on actual the data like we did before...
+
+```{r}
+plot(p, main="Bioclim model prediction",
+  xlim=range(df$lon,na.rm=T), 
+  ylim=range(df$lat,na.rm=T))
+```
+
+...and also put in the occurrence points.
+
+```{r}
+plot(p, main="Climate envelope model prediction with GBIF occurrences",
+  xlim=range(df$lon,na.rm=T), 
+  ylim=range(df$lat,na.rm=T))
+points(df$lon,df$lat,col=rgb(0,0,0,0.5),pch=20,cex=0.5) #make the points smaller so they don't get in the way too much
+```
+
+The Bioclim doesn't do a particularly good job of predicting the giant anteaters' distribution. Notice how some of the most suitable areas don't have any specimens at all. Either the climate isn't the main factor in where they can live, or the sampling is not very good, or both.
+
+------------------------------------------------------------------------
+
+***Question:*** How did it do for your species? Save the plots to your folder.
+
+------------------------------------------------------------------------
+
+### Linear model
+
+There are other functions that can make linear models. A linear model is an equation that describes how the value of each of the climate variables in a particular spot on the map influences the likelihood that the species will occur in that spot.
+
+To use them we're going to need to make some points in places where your species *isn't* present, so that we can compare them to the places where the species was actually found. The other model just used the background.
+
+First, get the values of the climate variables at the location of each of the species occurrences with the function `extract` from the `raster` package. This function takes two arguments, a RasterStack and a set of coordinates (GPS points), and returns a matrix of all the climate variables at all the locations.
+
+```{r}
+presvals<-extract(climate, df[,c("lon","lat")])
+dim(presvals)
+set.seed(0) #initialize random number generator
+backgr <- randomPoints(climate, max(c(nrow(df),500))) #make up some fake long/lat points
+plot(wrld_simpl);points(backgr,col="blue");points(df$lon,df$lat,col="red") #there they are
+```
+
+The blue points are the fake long/lat points that we just made up for locations where the species is absent. We'll extract the "absent" climate values and assemble them into a table with the "presence" values.
+
+```{r}
+absvals <- extract(climate, backgr) #extract climate values at those points
+pb <- c(rep(1, nrow(presvals)), rep(0, nrow(absvals))) #make a vector that indicates whether the species is present at that point or not
+sdmdata <- data.frame(cbind(pb, rbind(presvals, absvals))) #bind the presence and absence values together into a single data frame
+head(sdmdata) #rows with pb=1 means the species was found at that location
+tail(sdmdata) #rows with pb=0 means there's no occurrence at that location
+```
+
+These presence and absence data can now be used to make a model using the function `glm()`.
+
+```{r}
+m2<-glm(pb ~ bio1 + bio2 + bio3 + bio4 + bio5 + bio6 + bio7 + bio8 + bio9 + bio10 + bio11 + bio12 + bio13 + bio14 + bio15 + bio16 + bio17 + bio18 + bio19, data=sdmdata)
+```
+
+This is a linear model so you can look at the coefficents to estimate how much influence each variable has on the species distribution:
+
+```{r}
+#exclude element 1, which is the intercept (predicted value if all climate variables are zero)
+sort(abs(m2$coefficients[-1]))
+plot(m2$coefficients[-1])
+```
+
+For my anteaters, the most predictive climate variables are:
+
+-   bio5 (max temperature of warmest month), which has a negative coefficient -- they don't like places that get too hot in the summer
+
+-   bio2 (average temperature difference within a month), which has a positive coefficient -- they prefer places where night and day temperatures are different
+
+-   bio6 (
+
+The precipitation variables (12 through 19) don't seem to affect them as much; that is, the coefficients are near zero.
+
+------------------------------------------------------------------------
+
+***Question:*** Your species will certainly be different from mine. Which climate variables were most important to them? What do these variables mean?
+
+------------------------------------------------------------------------
+
+Now to make the prediction map for the other model:
+
+```{r}
+q<-predict(climate,m2,progress="text")
+```
+
+And plot it:
+
+```{r}
+plot(q, main="Linear model prediction",
+  xlim=range(df$lon,na.rm=T), 
+  ylim=range(df$lat,na.rm=T))
+```
+
+We can add the occurrence points to this map too:
+
+```{r}
+plot(q, main="Linear model prediction with GBIF occurrences",
+  xlim=range(df$lon,na.rm=T), 
+  ylim=range(df$lat,na.rm=T))
+points(df$lon,df$lat,col=rgb(0,0,0,0.5),pch=20,cex=0.5)
+```
+
+The difference between the `bioclim` model and the `glm` model, other than the scale of the suitability metric, is that the former doesn't use the information about combinations of the different climate variables. You can see that the linear model did better at overlapping with the anteaters' real range -- the areas with higher occurrence densities are more green.
+
+------------------------------------------------------------------------
+
+**Question:** How did the linear model do with your species? Can you notice any differences between the Bioclim and linear models?
+
+------------------------------------------------------------------------
+
+# Part 2. Climate change and environmental variables
+
+In this section you are going to examine the mean annual temperature for this location (UC Merced) in the past, present, and projected future.
+
+To load the paleoclimate and future climate data, run the following:
+
+```{r}
+source("assemble-paleoclimate.R")
+```
+
+Examine the objects that it just loaded. These are four RasterStacks: `lgm` (Last Glacial Maximum, about 22,000 years ago), `midH` (Mid-Holocene, about 6000 years ago), `modern` (2000 CE), and `future` (projected climate for 2070 CE).
+
+## Getting longitude and latitude data
+
+Google "UC Merced GPS coordinates" to find that the place where you're sitting right now is at longitude 120.42 W, latitude 37.36 N. That is:
+
+```{r}
+UCM_lonlat <- data.frame(lon=-120.42, lat=37.36)
+UCM_lonlat #inspect
+```
+
+(Note that since the longitude is West, we have to make it a negative number.)
+
+## Extracting the climate variables
+
+Using the extract() function that we used earlier, get the data from each of the four climate layers you just loaded for the location of UC Merced. (Remember that the syntax is `extract(rasterstack,location)`.) Save them to appropriately named variables.
+
+```{r}
+lgm_UCM<-extract(lgm,UCM_lonlat)
+midH_UCM<-extract(midH,UCM_lonlat)
+modern_UCM<-extract(modern,UCM_lonlat)
+future_UCM<-extract(future,UCM_lonlat)
+
+#combine all four into a data frame
+climate_UCM<-data.frame(rbind(lgm_UCM,midH_UCM,modern_UCM,future_UCM))
+rownames(climate_UCM)<-c("LGM","MidH","Modern","Future")
+colnames(climate_UCM)<-colnames(modern_UCM)
+climate_UCM
+```
+
+## Plotting temperature by time
+
+Remember how bioclim variable 1 is mean annual temperature? If you want to see how mean annual temperature at our current location has changed in the last 22,000 years, you can do that now. Let's plot only that first variable from each of these.
+
+```{r}
+plot(climate_UCM$bio1/10) #divide by 10 to get degrees C
+```
+
+This is a very simple plot of the data. The points aren't connected, the axes aren't labeled, there's no title, and the x-axis is not scaled by time. We can also do a more sophisticated version:
+
+```{r}
+date<-c(-22000, -6000, 0, 50)
+plot(x = date, y = climate_UCM$bio1/10,
+     type = "o", 
+     main = "Temperature at UC Merced", 
+     xlab = "Years before present", ylab = "Mean annual temp (degrees C)")
+```
+
+------------------------------------------------------------------------
+
+**Exercise**
+
+Think of another place on Earth that you feel connected to. (The place where you were born? Your favorite vacation spot? Grandma's house? Somewhere you hope to live someday?) Repeat the same steps for that place that we just did for UC Merced.
+
+1.  Find its longitude and latitude coordinates. (Remember: North or East = positive numbers, West and South = negative numbers.) Assign those coordinates to a new data frame.
+2.  Use `extract()` to get the values of the bioclimate variables at that location for all four points in time.
+3.  Plot the mean annual temperature versus time in your new place. Save the plot to your folder and show it to the instructor.
+
+# Part 4. Modeling with paleoclimate data
+
+Now that you've looked at both paleoclimate data and paleobiological data, we can put them together to predict future species distributions.
+
+## Loading the fossil occurrence data
+
+```{r}
+load("neotoma_lonlat.RData")
+load("gbif.RData")
+names(neotoma_lonlat)
+names(gbif)
+```
+
+Find the organism you investigated in part 3 in the list of names. For the example organism, I'm going to use *Microtus pennsylvanicus* which is number 1 in both these lists, but you should use a different one. Assign the index of your organism in the list to `index`.
+
+```{r}
+index<-1
+```
+
+Now make new variables containing the localities for each time interval and delete the big data files you loaded:
+
+```{r}
+species_name<-names(gbif)[index]
+data_lgm<-neotoma_lonlat[[index]]$LGM
+data_midH<-neotoma_lonlat[[index]]$MidH
+data_now<-gbif[[index]][,c("lon","lat")]
+rm(gbif,neotoma_lonlat)
+```
+
+Now you have three variables containing the occurrences of your species for the last glacial maximum (\~22,000 years BP), mid-Holocene (\~6,000 years BP), and modern (within the last 200 years).
+
+You can map them all on top of each other.
+
+```{r}
+xrange<-range(c(data_lgm$lon,data_midH$lon,data_now$lon),na.rm=T)
+yrange<-range(c(data_lgm$lat,data_midH$lat,data_now$lat),na.rm=T)
+
+require(maptools) #load the mapping library
+data(wrld_simpl)
+plot(wrld_simpl,axes=TRUE,col="lightgreen", xlim=xrange, ylim=yrange,
+     main=paste(species_name,"",sep=" "))
+points(data_now$lon,data_now$lat,col="red",pch=20,cex=0.8)
+points(data_midH$lon,data_midH$lat,col="black",pch=20,cex=0.8)
+points(data_lgm$lon,data_lgm$lat,col="gold",pch=20,cex=0.8)
+#move the legend to a different corner by changing the value of the argument "x"
+legend(x="bottomleft",legend=c("22,000ybp (LGM)","6,000ybp (Mid-Holocene","Present"),pch=20,col=c("gold","black","red"))
+```
+
+In the *Microtus pennsylvanicus* example, the vole's range shifts northward through each step.
+
+------------------------------------------------------------------------
+
+**Question:** Judging the map for your species by eye the same way, do you see a shift in its distribution? What seems to be changing?
+
+------------------------------------------------------------------------
+
+## Predicting species distributions past and future
+
+We can make a linear model of the climate envelope just like before. This time we'll use all three of the time intervals for which we have data (LGM, mid-Holocene, and modern) to make our predictions.
+
+```{r}
+presvals22k<-extract(lgm, data_lgm[,c("long","lat")])
+presvals6k<-extract(midH, data_midH[,c("long","lat")])
+presvals0<-extract(modern, data_now[,c("lon","lat")])
+presvals<-rbind(presvals22k,presvals6k,presvals0) #put all presence values together into a single data table
+dim(presvals)
+```
+
+```{r}
+set.seed(0) #initialize random number generator
+backgr <- rbind(randomPoints(modern, nrow(presvals)*(1/0.85)))
+absvals <- rbind(extract(lgm, backgr),
+                 extract(midH,backgr),
+                 extract(modern,backgr)) #extract climate values at those points
+pb <- c(rep(1, nrow(presvals)), rep(0, nrow(absvals))) #make a vector that indicates whether the species is present at that point or not
+sdmdata <- data.frame(cbind(pb, rbind(presvals, absvals))) #bind the presence and absence values together into a single data frame
+colnames(sdmdata)<-c("pb",names(modern))
+mod<-glm(pb ~ bio1 + bio2 + bio3 + bio4 + bio5 + bio6 + bio7 + bio8 + bio9 + bio10 + bio11 + bio12 + bio13 + bio14 + bio15 + bio16 + bio17 + bio18 + bio19, data=sdmdata)
+```
+
+Again we use the linear model to make estimates of climate suitability at every location on the map (this might take a while to run!):
+
+```{r}
+names(midH)<-names(lgm)<-names(future)<-names(modern)
+predlgm<-predict(lgm,mod,progress="text")
+predmidH<-predict(midH,mod,progress="text")
+prednow<-predict(modern,mod,progress="text")
+pred2070<-predict(future,mod,progress="text")
+```
+
+And plot them:
+
+```{r}
+par(mfrow=c(2,2))
+plot(predlgm, main="22,000kya",xlim=xrange,ylim=yrange)
+points(data_lgm$lon,data_lgm$lat,col="blue",pch=20,cex=0.8)
+plot(predmidH, main="6,000kya",xlim=xrange,ylim=yrange)
+points(data_midH$lon,data_midH$lat,col="black",pch=20,cex=0.8)
+plot(prednow, main="today",xlim=xrange,ylim=yrange)
+points(data_now$lon,data_now$lat,col="red",pch=20,cex=0.8)
+plot(pred2070, main="2070CE",xlim=xrange,ylim=yrange)
+```
+
+------------------------------------------------------------------------
+
+My example species *Microtus pennsylvanicus* has had its range expand northward, and the climate variable projections suggest that we should expect this trend to continue. Suitable habitats at the LGM are confined to the South, and as the climate warms and the ice sheets disappear, more habitat is suitable in northern Canada. However, in the 2070 prediction, the current southern part of the range is less green, indicating that it will be less suitable habitat in the near future.
+
+------------------------------------------------------------------------
+
+**Question:** What about your species? What has happened to its range since the last ice age ended, and what do you expect to happen to it by 2070? Do you expect it to be one of the winners or the losers of climate change?
+
+------------------------------------------------------------------------

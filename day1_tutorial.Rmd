@@ -1,0 +1,733 @@
+---
+title: "Day 1"
+author: "Val Syverson"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This tutorial is based on two sources:
+
+1.  <https://hbctraining.github.io/Training-modules/IntroR/> by Meeta Mistry, Mary Piper, and Radhika Khetani
+
+2.  <https://rspatial.org/raster/sdm/index.html> by Robert J. Hijmans and Jane Elith.
+
+# How to use this tutorial document
+
+This file should have opened in a web browser window. It doesn't run anything in R by itself; instead you will need to copy and paste (or retype) commands from it.
+
+Whenever you see something like this,
+
+```{r}
+print("hello world") #comments look like this; you don't have to copy them
+```
+
+the tutorial will display two code boxes.
+
+-   The box **without** the two hash characters (\##) contains the **command**, which is [the text that you will run in R]{.underline}. (Inside the command, anything that starts with a single \# and is displayed in grey is just a comment; you don't have to run it.)
+
+-   The box **with** the \## is the **result**, which should correspond to what will be printed by your console window.
+
+# Part 2. Getting started with RStudio
+
+Find the file "installscript.R" in the class network directory where you found this tutorial, and choose RStudio to open it in the RStudio program. RStudio is a development environment for R, which means it provides a graphical interface for writing code in the R programming language.
+
+The RStudio interface has four main panels:
+
+-   **Console**: where you can type commands and see output. The console is all you would see if you ran R in the command line without RStudio.
+
+-   **Script editor**: where you can type out commands and save to file. You can also submit the commands to run in the console. Right now it's showing "installscript.R".
+
+-   **Environment** shows all active objects and History keeps track of all commands run in the console.
+
+-   **Files/Plots/Packages/Help**: several different tabs that show the active directory, plots, installed packages (more about this later), help files, etc.
+
+First you're going to use the script editor (top left panel). Click "Source" in the top right of this panel to run the "installscript.R" script, which will install all the libraries you'll need for this course. While it's running, look at the other panels too.
+
+Next find the **console** (the bottom left panel). When you type something into this command-line interface and hit Enter, the text you entered will be run in the R processor and the results will be returned. Right now you'll see a bunch of text scrolling by as it installs the packages.
+
+## The command prompt
+
+Interpreting the command prompt can help understand when R is ready to accept commands. Below lists the different states of the command prompt and how you can exit a command:
+
+-   Console is ready to accept commands: \>.
+
+If R is ready to accept commands, the R console shows a \> prompt. When the console receives a command (by directly typing into the console or running from the script editor (Ctrl-Enter), R will try to execute it. After running, the console will show the results and come back with a new \> prompt to wait for new commands.
+
+-   Console is waiting for you to enter more data: +.
+
+If R is still waiting for you to enter more data because the code sent to the console isn't a complete command yet, the console will show a + prompt. It means that you haven't finished entering a complete command. Often this can be due to you having not 'closed' a parenthesis or quotation.
+
+If you can't figure out why your command isn't running, you can click inside the console window and press the Escape key to escape the command and bring back a new prompt \>; then you can start over sending the command.
+
+### Using the command prompt
+
+Once your libaries are finished installing and it shows a command prompt, run the following command by typing or pasting it into the console and hitting Enter:
+
+```{r}
+getwd()
+```
+
+This should show you where in the computer's file structure is your current working directory. (It will NOT look like the result above.) If you look in the "Files" tab in the bottom right panel, you will see all the objects in this directory, which you can also get using the following command:
+
+```{r}
+dir()
+```
+
+Try some other stuff to see how this works.
+
+```{r}
+9+6 #you can just use it as a calculator
+sum(9,6) #you can also use functions instead of arithmetic symbols
+```
+
+## The script editor
+
+Now try the script editor (top left window in RStudio). Paste in the following:
+
+```{r}
+# I am adding 3 and 5!
+3 + 5
+```
+
+It didn't run just because you wrote it in there. Highlight the pasted text and hit `Ctrl+Enter` (or click Run in the top right corner of the pane): the highlighted text will be sent to the console and your result will appear.
+
+This is useful for when you need to run the same command multiple times, such as when you're trying to get something right -- that's why it's called the "editor". You should make a habit of writing your commands in the code editor instead of the console, because then you can easily check them later to see exactly how you did it.
+
+## Syntax
+
+Notice that the English comment in there started with the *comment symbol*, `#`. What happens if we do that same command without the `#`? Re-run the command after removing the `#` sign in the front: `I am adding 3 and 5. R is fun!` `3 + 5` Now R is trying to run that sentence as a command, and it doesn't work. We get an error in the console "Error: unexpected symbol in"I am" means that the R interpreter did not know what to do with that command." **Things sent to the console won't work unless they are properly constructed commands in the R language.**
+
+Use the \# character to insert comments about what your code is doing. This, again, makes it easier to understand your own work later.
+
+### Assignment operator
+
+To do useful and interesting things in R, we need to assign *values* to *variables* using the **assignment operator**, `<-`. For example, we can use the assignment operator to assign the value of `3` to a variable named `x` by running:
+
+```{r}
+x <- 3
+```
+
+The assignment operator (`<-`) assigns **values on the right** to **variables on the left**.
+
+### Variables
+
+A variable in computer programming is a symbolic name for a location where information can be maintained and referenced. You can think of a variable like a "bucket" of information with a label on the outside. When referring to the bucket of information, we use the label on the bucket (the variable name), not the data stored in the bucket (the value).
+
+In the example above, we created a variable or a 'bucket' called `x`. Inside we put a value, `3`.
+
+Let's create another variable called `y` and give it a value of 5.
+
+```{r}
+y <- 5
+```
+
+When assigning a value to an variable, R does not print anything to the console. You can tell it to print the value by typing the variable name:
+
+```{r}
+y
+```
+
+You can also view information on all the currently stored variables by looking in your `Environment` window in the upper right-hand corner of the RStudio interface.
+
+Now we can reference these buckets by name to perform mathematical operations on the values contained within. What do you get in the console for the following operation?
+
+```{r}
+x+y
+```
+
+Try assigning the results of this operation to another variable called `number`.
+
+```{r}
+number <- x + y
+number
+```
+
+------------------------------------------------------------------------
+
+**Questions:**
+
+1.  Change the value of the variable `x` to 5 using the assignment operator. What happens to `number`? Does it change?
+2.  Now try changing the value of variable `y` to contain the value 10. What do you need to do to update the variable `number` to the new value of x + y? **Show your results to an instructor.** \*\*\*
+
+------------------------------------------------------------------------
+
+#### Tips on variable names
+
+Variables can be given almost any name, such as `x`, `current_temperature`, or `subjectID`. However, there are some rules / suggestions you should keep in mind:
+
+-   R is *case sensitive* (e.g., `X` is different from `x`)
+-   Variable names can't start with a number (`2x` is not valid but `x2` is)
+-   You can't use names of fundamental functions in R (e.g., `if`, `else`, `for`). In general, even if it's allowed, it's best to not use other function names (e.g., `c`, `T`, `mean`, `data`) as variable names. -- You can type `?` followed by the name to see if the name is already in use by a built-in function.
+-   Use short variable names; longer names = more typos.
+-   Before you assign a new variable, check in the Environment tab to make sure you didn't already use the name.
+
+## Data Storage
+
+### Data Types
+
+Variables can contain values of specific types within R. The most common basic **data types** in R include:
+
+-   `"numeric"` for any numerical value
+-   `"character"` for text values, denoted by using quotes ("") around value\
+-   `"logical"` for `TRUE` and `FALSE` (the boolean data type)
+
+The table below provides examples of each of the commonly used data types:
+
+|  Data Type |        Examples        |
+|-----------:|:----------------------:|
+|   Numeric: |     1, 1.5, 20, pi     |
+| Character: | "anytext", "5", "TRUE" |
+|   Logical: |   TRUE, FALSE, T, F    |
+
+### Data Structures
+
+We know that variables are like buckets, and so far we have seen that bucket filled with a single value. Even when `number` was created, the result of the mathematical operation was a single value. **Variables can store more than just a single value, they can store a multitude of different data structures.** These include, but are not limited to, vectors (`c`), factors (`factor`), matrices (`matrix`), data frames (`data.frame`) and lists (`list`).
+
+#### Vector
+
+A vector is the most common and basic data structure in R, and is pretty much the workhorse of R. It can be constructed with the *combine* command, `c()`. It's basically just a collection of values, mainly either numbers,
+
+```{r}
+c(1, 40, 9, 22)
+```
+
+or characters,
+
+```{r}
+c("a", "b", "c", "q")
+```
+
+or logical values.
+
+```{r}
+c(TRUE, TRUE, FALSE, TRUE)
+```
+
+**Note that all values in a vector must be of the same data type.** If you try to create a vector with more than a single data type, R will try to coerce it into a single data type. For example, if you were to try to create the following vector:
+
+```{r}
+c("a", 9, 12, TRUE)
+```
+
+R will turn it into the following by forcing ("coercing") all the values to character type: `[1] "a"    "9"    "12"   "TRUE"`
+
+The analogy for a vector is that your bucket now has different compartments; these compartments in a vector are called *elements*. Each **element** contains a single value, and there is no limit to how many elements you can have. A vector is assigned to a single variable, because regardless of how many elements it contains, in the end it is still a single bucket.
+
+Let's create a vector of specimen counts and assign it to a variable called `specCounts`. Run the following lines:
+
+```{r}
+specCounts <- c(3000, 50000, 46)
+specCounts
+```
+
+Each element of this vector contains a single numeric value, and three values will be combined together into a vector using `c()` (the *combine* function). All of the values are put within the parentheses and separated with a comma.
+
+Looking in your Environment tab, you can see that the `specCounts` variable you just created is numeric, starts at element 1 and ends at element 3 (i.e. it's a vector containing 3 numeric values).
+
+A vector can also contain characters. Run the following code to create another vector called `species` with three elements, where each element corresponds with the previous vector.
+
+```{r}
+species<-c("crocodile", "trout", "panda")
+species
+```
+
+#### Matrix
+
+A `matrix` in R is a collection of vectors of the **same length and type**. Vectors can be combined as columns in the matrix or by row, to create a 2-dimensional structure.
+
+Matrices are used commonly as part of the mathematical machinery of statistics. We don't create these manually very often, but they're very commonly used inside R functions. They are usually of numeric datatype and used in computational algorithms to serve as a checkpoint. For example, if input data is not of identical data type (numeric, character, etc.), the `matrix()` function will throw an error and stop any downstream code execution.
+
+#### Data Frame
+
+A `data.frame` is the most common data structure in R for storing data in tables, and it's what we use for statistics and plotting. A `data.frame` is similar to a matrix in that it's a collection of vectors of of the **same length** and each vector represents a column. However, in a dataframe **each vector can be of a different data type** (e.g., characters, integers, factors).
+
+A data frame is the most common way of storing data in R, and if used systematically makes data analysis easier.
+
+We can create a dataframe by bringing **vectors** together to **form the columns**. We do this using the `data.frame()` function. We give the function the different vectors we would like to bind together, and it creates the data frame. *This function will only work for vectors of the same length.*
+
+```{r}
+df<-data.frame(species,specCounts)
+df
+```
+
+You can see that there are two columns, each one containing one of the input vectors.
+
+#### List
+
+Lists are a data structure in R that can be perhaps a bit daunting at first, but soon become amazingly useful. A list is a data structure that can hold any number of any types of other data structures, one after another.
+
+If you have variables of different data structures you wish to combine, you can put all of those into one list object by using the `list()` function and placing all the items you wish to combine within parentheses.
+
+Run the following to construct a list called "list1" that contains all the data structures we've seen so far in this tutorial.
+
+```{r}
+list1<-list(number, species, specCounts)
+list1
+```
+
+There are three components corresponding to the three different variables we passed in, and what you see is that structure of each is retained.
+
+## Functions
+
+A key feature of R is functions. Functions are **"self contained" modules of code that accomplish a specific task**. Functions usually take in some sort of data structure (value, vector, dataframe etc.), process it, and return a result.
+
+The general usage for a function is the name of the function followed by parentheses:
+
+`function_name(input)`
+
+The input(s) are called **arguments**, which can include:
+
+1.  the data structure or data structures on which the function operates
+2.  specifications that alter the way the function operates
+
+Not all functions take arguments, for example:
+
+`getwd()`
+
+However, most functions take one or more arguments. If you don't specify a required argument when calling the function, you will receive an error. Other arguments are optional: if you don't include them, the function will fall back on using a *default*. The **defaults** represent standard values that the author of the function specified as being "good enough in standard cases", but if you want something specific, simply change the argument yourself with a value of your choice.
+
+### Basic functions
+
+We have already used a few examples of basic functions in the previous lessons i.e `getwd()`, `c()`, and `data.frame()`. These functions are available as part of R's built in capabilities, and we will explore a few more of these base functions below.
+
+You can also get functions from external [*packages or libraries*](https://github.com/hbctraining/Intro-to-R/blob/master/lessons/03_introR-functions-and-arguments.md#packages-and-libraries), or [even write your own](https://hbctraining.github.io/Intro-to-R/lessons/03_introR-functions-and-arguments.html#user-defined-functions).
+
+Let's revisit the function `c()` that we have used previously to combine data into vectors. The *arguments* it takes are a collection of numbers, characters or strings (separated by a comma). The `c()` function performs the task of combining all the numbers or characters provided as arguments into a single vector. You can also pass an existing vector as one of the arguments in order to add elements to it:
+
+```{r}
+specCountsLonger<-c(900,specCounts) #adds the new value at the beginning 
+#or
+specCountsLonger<-c(specCounts,900) #adds the new value at the end
+```
+
+What happens here is that we take the original vector `specCounts` (containing three elements), and add another item to one end. You can imagine doing this over and over again to build a vector.
+
+Since R is used for statistical computing, many of the base functions involve mathematical operations. If interested, we have linked a [detailed guide](http://www.sthda.com/english/wiki/comparing-means-in-r) for performing basic statistical tests in R. One example of a base R mathematical function would be `sqrt()`. The input/argument must be a number, and the the output is the square root of that number. Let's try finding the square root of 81:
+
+```{r}
+sqrt(81)
+```
+
+Now what would happen if we **called the function** (e.g. ran the function), on a *vector of values* instead of a single value?
+
+```{r}
+sqrt(specCounts)
+```
+
+In this case the function was called on each individual value of the vector `specCounts` and the respective results were displayed. Beware: this does not work with every function!
+
+Let's try another function, this time using one that we can change some of the *options* (arguments that change the behavior of the function), for example `round`:
+
+```{r}
+round(3.14159)
+```
+
+We can see that we get `3`. That's because the default is to round to the nearest whole number. **What if we want a different number of significant digits?**
+
+#### Seeking help on arguments for functions
+
+The best way of finding out this information is to use the help operator `?` followed by the name of the function. Doing this will open up the help manual in the bottom right panel of RStudio that will provide a description of the function, usage, arguments, details, and examples:
+
+```{r}
+?round
+```
+
+You can also use the `examples()` function to run the examples from the help file. (This one has a lot of examples!)
+
+```{r}
+example(round)
+```
+
+If you are already familiar with the function but just need to remind yourself of the names of the arguments, you can use:
+
+```{r}
+str(round)
+```
+
+This tells us that we can change the number of digits returned by **adding an optional argument**. We can type `digits=2` or however many we may want:
+
+```{r}
+round(3.14159, digits=2)
+```
+
+------------------------------------------------------------------------
+
+**Question:**
+
+Another commonly used base function is `mean()`. Use this function to calculate an average for the `specCounts` vector, and show your result to the instructor. (If you look at the help file, you will see that the arguments for the `mean()` function are supplied in a different *data structure* than the other functions we've seen so far.)
+
+------------------------------------------------------------------------
+
+## Data
+
+The last thing we're going to cover in this introduction is how to inspect data.
+
+### Selecting data using indexes and sequences
+
+When analyzing data, we often want to **partition the data so that we are only working with selected columns or rows.** A data frame or data matrix is simply a collection of vectors combined together. So let's begin with vectors and how to access different elements, and then extend those concepts to dataframes.
+
+#### Vectors
+
+If we want to extract one or several values from a vector, we must provide one or several indexes using square brackets `[ ]` syntax. **The index represents the location of the element within a vector** (or the compartment number, if you think of the bucket analogy). R indexes start at 1.
+
+Let's start by creating a vector called age:
+
+```{r}
+age <- c(15, 22, 45, 52, 73, 81)
+```
+
+Suppose we only wanted the fifth value of this vector, we would use the following syntax:
+
+```{r}
+age[5]
+```
+
+If we wanted all values except the fifth value of this vector, we would use the following:
+
+```{r}
+age[-5]
+```
+
+If we wanted to select more than one element we would still use the square bracket syntax, but rather than using a single value we would pass in a *vector of several index values*:
+
+```{r}
+idx <- c(3,5,6) # create vector of the elements of interest
+age[idx]
+```
+
+To select a sequence of continuous values from a vector, we would use `:` which is a special operator that creates numeric vectors of integer in increasing or decreasing order. Let's select the *first four values* from age:
+
+```{r}
+age[1:4]
+```
+
+Try reversing that to say `4:1` and see what happens!
+
+Selection of values can also be performed using logical expressions. Logical operators include greater than (\>), less than (\<), and equal to (==). We can use logical expressions to determine whether a particular condition is true or false. Then, subset out the TRUE values:
+
+```{r}
+age[age > 50]
+```
+
+More details about using logical expressions to subset data can be found [here](https://github.com/hbctraining/Intro-to-R/blob/master/lessons/04_introR-data-wrangling.md#selecting-using-indices-with-logical-operators) if you want it.
+
+### Dataframes
+
+We're going to use the built-in data set called `iris`. This single dataframe contains the measurements in centimeters of the variables sepal length, sepal width, petal length and petal width, respectively, for 50 flowers from each of 3 species of iris, a total of 150 specimens. The species are *Iris setosa*, *I. versicolor*, and *I. virginica*. ####Inspecting data frames This is a small dataframe, so you can just look at it in the console first.
+
+```{r}
+iris
+```
+
+Or check how many rows and columns it has with `dim()`:
+
+```{r}
+dim(iris)
+```
+
+However, 150 lines is still a little inconvenient if you just want to see what the data in each column are generally like. Try this:
+
+```{r}
+head(iris)
+```
+
+Now you see just the first 6 lines, as well as the header. Each row holds information for a single specimen, and the columns contain information about the specimen's measurements and species. What data type is each column? Check using `str()`, which we used before to inspect the arguments of a function. When you call it on a variable, it tells you about the data structure and types.
+
+```{r}
+str(iris)
+```
+
+Uh-oh, what's a factor data type? Just a character field with a restricted set of possible values called "levels". Don't worry about that for now.
+
+(You can also look at this in a separate tab in RStudio. Choose "package:datasets" from the dropdown that currently says "Global Environment". Then click on `iris` in the Environment tab to open the data table in a new tab in the same pane as the script editor.)
+
+#### Selecting data from dataframes 
+
+Dataframes (and matrices) have 2 dimensions (rows and columns), so if we want to select some specific data from it we need to specify index for each dimension. We use the same square bracket notation but rather than providing a single index, there are *two indexes*. Within the square bracket, **row numbers come first followed by column numbers, and the two are separated by a comma**.
+
+```{r}
+iris[1, 1]   # element from the first row in the first column of the data frame
+iris[1, 3]   # element from the first row in the 3rd column
+```
+
+To select whole rows, you provide only the index for the rows and leave the columns index blank. The key here is to include the comma, to let R know that you are accessing a 2-dimensional data structure:
+
+```{r}
+iris[3, ]    #returns a vector containing all elements in the 3rd row
+```
+
+If you were selecting specific columns from the data frame - the rows are left blank:
+
+```{r}
+iris[ , 3]    #returns a vector containing all elements in the 3rd column
+```
+
+Just like with vectors, you can select multiple rows and columns at a time. Within the square brackets, you need to provide a vector of the desired values:
+
+```{r}
+iris[ , 1:2] #returns a dataframe containing first two columns
+iris[c(1,3,6), ] #returns a dataframe containing first, third and sixth rows
+```
+
+For larger datasets, it can be tricky to remember which column number corresponds to a particular variable.In some cases, the column number for a variable can *change* if the script you are using adds or removes columns. It's therefore often better to use column names to refer to a particular variable, and it makes your code easier to read and your intentions clearer.
+
+```{r}
+iris[1:3 , "Petal.Length"] # values of the Petal.Length column from the first three samples
+```
+
+You can do operations on a particular column, by selecting it using the `$` sign. In this case, the entire column is a vector. For instance, to extract all the species names from our dataset, we can use:
+
+```{r}
+iris$Species
+```
+
+You can use `names()` or `colnames()` to remind yourself of the column names. We can then supply index values to select specific values from that vector. For example, if we wanted the petal widths for the first five samples in `iris`:
+
+```{r}
+colnames(iris)
+iris$Petal.Width[1:5]
+```
+
+The `$` allows you to select a single column by name, which is a one-dimensional vector that requires only one index and no commas. To select multiple columns by name, you need to make a vector of strings that correspond to column names and supply it to the dataframe name:
+
+```{r}
+iris[, c("Petal.Length", "Petal.Width")]
+```
+
+While there is no equivalent `$` syntax to select a row by name, you can select specific rows using the row names (in this case just numbers).
+
+```{r}
+rownames(iris)
+iris[c("100", "150"),]
+```
+
+## Subsetting data
+
+Another way of partitioning **dataframes** is using the `subset()` function to return the rows of the dataframe for which the logical expression is TRUE. Allowing us to the subset the data in a single step. The syntax for the `subset()` function is:
+
+`subset(dataframe, column_name == "value")` Any logical expression could replace the \`== "value". For example, we can look at the samples of the species *setosa* only:
+
+```{r}
+subset(iris, Species == "setosa")
+```
+
+------------------------------------------------------------------------
+
+***Question:***
+
+Look at the results of the following commands.
+
+```{r}
+levels(iris$Species)
+mean(subset(iris,Species=="setosa")$Petal.Width)
+mean(subset(iris,Species=="versicolor")$Petal.Width)
+mean(subset(iris,Species=="virginica")$Petal.Width)
+```
+
+1.  Which species has the *widest* petals?
+2.  Which species has the *longest* petals? Is it the same one? Edit the script to get it to give you the answer.
+
+------------------------------------------------------------------------
+
+# Part 3: Species ranges from GBIF data
+
+In this section, the examples will be done using the species *Myrmecophaga tridactyla*, the giant anteater. Wherever you see its name, you'll substitute your own species' name.
+
+Open a new script (File\>New File\>R Script). Hit Ctrl+S to save it with the name "species-range" or something like that. It will prompt you to save it in the test folder of your login, which is fine.
+
+## Downloading your data
+
+You will use a function in the R package `dismo` to download your data. Paste the following into your new script file, substituting your species name, and run it by selecting it and hitting Ctrl+Enter or clicking "Run" in the top right corner of the script pane:
+
+```{r}
+require(dismo)
+gbif('Myrmecophaga','tridactyla',geo = FALSE, download = FALSE) #find out the total number of occurrences for this species in the database -- if this doesn't match the number of occurrences you see on the website, you should see if you typed something wrong!
+df<-gbif('Myrmecophaga','tridactyla',geo=TRUE) #download all the occurrences with longitude and latitude data, which may not be all of them
+```
+
+Inspect the dataframe:
+
+```{r}
+dim(df) #GBIF returns a LOT of columns!
+```
+
+Look at the column names:
+
+```{r}
+colnames(df)
+```
+
+Look at some of the fields for the first six rows:
+
+```{r}
+head(df)[,c("species","continent","country","adm1","lat","lon")]
+```
+
+## Data cleaning
+
+First we're going to remove all the occurrences that don't have latitude and longitude data.
+
+```{r}
+df<-subset(df,!is.na(df$lon) & !is.na(df$lat))
+nrow(df) #how many data points do we have now?
+```
+
+Next, we make a simple map to look for errors:
+
+```{r}
+require(maptools) #load the mapping library
+data(wrld_simpl)
+plot(wrld_simpl,axes=TRUE,col="lightgreen")
+points(df$lon,df$lat,col="red",pch=20)
+```
+We should also make sure we're only dealing with live observations, not with fossil or preserved specimens.
+
+```{r}
+notobs<-which(!(df$basisOfRecord=="HUMAN_OBSERVATION" | df$basisOfRecord=="OBSERVATION" | df$basisOfRecord=="OCCURRENCE"))
+table(df[notobs,"basisOfRecord"])
+plot(wrld_simpl,axes=TRUE,col="lightgreen",
+     xlim=range(df$lon,na.rm=T), 
+     ylim=range(df$lat,na.rm=T)) #plot again with only the real data
+points(df$lon,df$lat,col="red",pch=20)
+points(df[notobs,]$lon,df[notobs,]$lat,col="black",pch=21)
+```
+
+The points that aren't from actual observations are circled in black. We'll remove these points as well:
+
+```{r}
+remove<-notobs
+df<-df[-remove,] #remove the incorrect points
+rm(remove)
+nrow(df) #how many left now?
+```
+
+Plot it again to see if anything looks like it's in the wrong place.
+Then we'll plot the data again to make sure there's nothing else that stands out as probably incorrect:
+
+```{r}
+plot(wrld_simpl,axes=TRUE,col="lightgreen",
+     xlim=range(df$lon,na.rm=T), 
+     ylim=range(df$lat,na.rm=T)) #plot again with only the real data
+points(df$lon,df$lat,col="red",pch=20)
+```
+
+Recall what you know about your species' range. Do any of these occurrences look like they might be errors?
+
+Data 'cleaning' is particularly important for data sourced from species distribution data warehouses such as GBIF. Such efforts do not specifically gather data for the purpose of species distribution modeling, so you need to understand the data and clean them appropriately, for your application.
+
+My example species, the giant anteater *Myrmecophaga tridactyla*, lives in South and Central American forests. The point on the US/Mexico border is probably an error, and the one in Yucatan is also suspicious. I'll take a look at them:
+
+```{r}
+test1<-which(df$lat>15) #the points in Mexico
+plot(wrld_simpl,axes=TRUE,col="lightgreen",
+     xlim=range(df$lon,na.rm=T), 
+     ylim=range(df$lat,na.rm=T)) #plot again with only the real data
+points(df$lon,df$lat,col="red",pch=20)
+points(df[test1,]$lon,df[test1,]$lat,col="black",pch=21) #circle the flagged points in black
+```
+
+All the points we've identified as being in the wrong place are now circled in black. What can we find out about them?
+```{r}
+df[test1,]
+```
+Neither of these points is in the GBIF map interface. I suspect they're no good.
+
+```{r,eval=F}
+remove<-c(test1)
+df<-df[-remove,] #remove the incorrect points
+rm(remove)
+plot(wrld_simpl,axes=TRUE,col="lightgreen",
+     xlim=range(df$lon,na.rm=T), 
+     ylim=range(df$lat,na.rm=T)) #plot again with only the real data
+points(df$lon,df$lat,col="red",pch=20)
+```
+
+In a longer-term research project intended for publication, you would spend a lot more time on the data cleaning step, and indeed there are programs and functions for doing exactly that, but for today let's leave it here.
+
+## Mapping species range
+
+Now, how should we visualize the species range?
+
+```{r}
+require(sf); require(concaveman) #load mapping libraries
+sfdata<-st_as_sf(df,coords=c("lon","lat")) #this reformats the coordinate points into a special data structure
+
+conc<-concaveman(sfdata,concavity=3) #this is called a concave hull, it's a polygon that contains all the points
+
+conv<-convHull(df[,c("lon","lat")]) #this is called a convex hull, it's just a polygon drawn around all the points that stick out the most
+```
+
+Then make a map that shows the concave and convex hulls:
+
+```{r}
+plot(wrld_simpl,axes=TRUE,col="lightgreen",
+     xlim=range(df$lon,na.rm=T), 
+     ylim=range(df$lat,na.rm=T))
+points(df$lon,df$lat,col="red",pch=20)
+plot(conv,add=T,col=rgb(1,1,0,0.3),lty="blank")
+plot(conc,add=T,col=rgb(1,0,0,0.3),lty="blank")
+```
+
+This isn't very satisfactory as a map of species range, as it doesn't take any notice of whether your species could actually live in any of those places. In the next part we'll look at some environmental data to see if we can figure out a better way.
+
+To save your map to your class file, click Export\>Save as Image. Give it a name that contains the species name and your name.
+
+# Part 4: Environmental data
+
+Download the climatic data from the WorldClim website.
+
+```{r}
+require(raster)
+climate<-getData('worldclim',var='bio',res=2.5)
+```
+
+The variable `bioclim` now contains a special data structure called a "RasterStack", which consists of some number of matrixes of exactly the same dimensions. (Think of it like a neatly aligned stack of maps.)
+
+```{r}
+climate
+```
+
+In this case, those maps contain the values of 19 different climatic variables that are frequently relevant to species distributions, for all the *land surface* in the whole world (not the oceans).
+
+### Viewing the environmental data
+
+You can plot any one of the layers to have a look at it.
+
+```{r}
+plot(climate$bio1)
+```
+
+This layer, `bio1`, is the average annual temperature. To see what each of the 19 bioclimatic variables means, look at <https://www.worldclim.org/data/bioclim.html>. Temperature measurements are given in tenths of a degree Celsius; precipitation is in millimeters. Then you can plot your own species occurrence data on top of it, restricting the range the same way we did in part 3:
+
+```{r}
+plot(climate$bio1,
+     xlim=range(df$lon,na.rm=T), 
+     ylim=range(df$lat,na.rm=T))
+points(df$lon,df$lat,col="red",pch=20)
+```
+
+Try this with each of the bioclimatic data layers in `bioclim` (`bio1` through `bio19`).
+
+------------------------------------------------------------------------
+
+### Thinking about it
+
+-   Do any of the bioclimatic variables seem to be important in controlling the range of your species?
+-   If so, which ones? Save the images to your class folder for later reference.
+-   What do you think about this? -- Are you surprised by the results? -- Can you think of a reason why these particular climatic variables might have a lot to do with the possible range of your species?
+
+**Tomorrow we'll do a quantitative model with these data to answer the same question!**
+
+# Saving your data
+
+Save your data so you can load it again tomorrow. This is not straightforward on UC Merced computer lab computers, so please follow ALL of the following steps:
+
+1.  Choose Session\>Save Workspace As...
+2.  In the popup window, choose Documents from the list on the left side under Quick Access.
+3.  Give the file a UNIQUE name with YOUR NAME in it and click Save.
+
+Your instructor will make sure these files are here for you to load tomorrow morning.
