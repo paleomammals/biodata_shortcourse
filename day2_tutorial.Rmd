@@ -11,7 +11,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Part 1. Mathematical modeling
 
-<<<<<<< HEAD
 First make sure your workspace from yesterday is loaded: go to the Documents folder, choose the .Rdata file that you saved yesterday afternoon, and open it in RStudio. It should look exactly like it did yesterday when you left it.
 
 Run the package installation script again and load the packages you need for this morning.
@@ -270,8 +269,8 @@ Now you have three variables containing the occurrences of your species for the 
 You can map them all on top of each other.
 
 ```{r}
-xrange<-range(c(data_lgm$lon,data_midH$lon,data_now$lon),na.rm=T)
-yrange<-range(c(data_lgm$lat,data_midH$lat,data_now$lat),na.rm=T)
+xrange<-range(c(data_lgm$lon,data_midH$lon,data_now$lon),na.rm=T) + c(-5,5)
+yrange<-range(c(data_lgm$lat,data_midH$lat,data_now$lat),na.rm=T) + c(-5,5)
 
 require(maptools) #load the mapping library
 data(wrld_simpl)
