@@ -596,10 +596,11 @@ df  <-  subset(df,!is.na(df$lon) & !is.na(df$lat))
 nrow(df) #how many data points do we have now?
 ```
 
-Then we transform all the negative longitude values so that the range goes from 0 to 360 instead of from -180 to 180. This will allow us to plot it on our map.
+Then we transform all the negative longitude values so that the range goes from 0 to 360 instead of from -180 to 180. This will allow us to plot it on our map. We will add this as an extra column in "df" so that we can use either version.
 ```{r}
 westlongitudes  <-  which(df$lon < 0)
-df[westlongitudes,"lon"]  <-  360 + df[westlongitudes,"lon"] 
+df[,"lon360"]  <- df[,"lon"] 
+df[westlongitudes,"lon360"]  <-  360 + df[westlongitudes,"lon"] 
 #Do you understand how these two lines work?
 ```
 
@@ -607,18 +608,20 @@ Next, we make a simple map to look for errors:
 
 ```{r}
 require(maps) #load the mapping library
-map("world2",col = "lightgreen") #generate the map
+map("world2",col = "green") #generate the map
 map.axes() #label the axes (longitude and latitude) 
-points(df$lon,df$lat,col = "red",pch = 20) #plot the species occurrence points
+points(df$lon360,df$lat,col = "red",pch = 20) #plot the species occurrence points
 ```
+
 This will be easier to read if we make it so the map shows only the part of the Earth where GBIF has occurrence records for our species.
 ```{r}
-map("world2",col = "lightgreen",
-     xlim = range(df$lon,na.rm = T), 
-     ylim = range(df$lat,na.rm = T)) 
-points(df$lon,df$lat,col = "red",pch = 20)
+map("world2",col = "green",
+     xlim = range(df$lon360,na.rm = T) + c(-1,1), #one extra degree on each side for visibility
+     ylim = range(df$lat,na.rm = T) + c(-1,1)) 
+points(df$lon360,df$lat,col = "red",pch = 20)
 map.axes()
 ```
+
 In the example of the blue morpho butterflies, you can see that almost all the occurrences are from the tropical parts of South and Central America, but there are also a few others in Europe and Oceania. This /could/ be 
 GBIF keeps track of museum specimens as well. What kinds of data points are included in your data set, and how many of them?
 
@@ -628,11 +631,11 @@ table(df[,"basisOfRecord"])
 But we don't want those -- we're trying to look at the actual habitat range of the living species. We should make sure we're only dealing with live observations, not with fossil or preserved specimens. Which points are /not/ from observations of living animals?
 ```{r}
 notobs <- which(!(df$basisOfRecord == "HUMAN_OBSERVATION" | df$basisOfRecord == "OBSERVATION" | df$basisOfRecord == "OCCURRENCE"))
-map("world2",col = "lightgreen",
-     xlim = range(df$lon,na.rm = T), 
-     ylim = range(df$lat,na.rm = T)) 
-points(df$lon,df$lat,col = "red",pch = 20)
-points(df[notobs,]$lon,df[notobs,]$lat,col = "black",pch = 21)
+map("world2",col = "green",
+     xlim = range(df$lon360,na.rm = T) + c(-1,1), 
+     ylim = range(df$lat,na.rm = T) + c(-1,1)) 
+points(df$lon360,df$lat,col = "red",pch = 20)
+points(df[notobs,]$lon360,df[notobs,]$lat,col = "black",pch = 21)
 map.axes()
 ```
 
@@ -649,11 +652,11 @@ Plot what's left again to see if anything looks like it's in the wrong place.
 Then we'll plot the data again to make sure there's nothing else that stands out as probably incorrect:
 
 ```{r}
-map("world2",col = "lightgreen",
-     xlim = range(df$lon,na.rm = T), 
-     ylim = range(df$lat,na.rm = T))
+map("world2",col = "green",
+     xlim = range(df$lon360,na.rm = T) + c(-1,1), 
+     ylim = range(df$lat,na.rm = T) + c(-1,1))
 map.axes()
-points(df$lon,df$lat,col = "red",pch = 20) #plot again with only the real data
+points(df$lon360,df$lat,col = "red",pch = 20) #plot again with only the real data
 ```
 
 Recall what you know about your species' range. Do any of these occurrences look like they might be errors?
@@ -663,36 +666,39 @@ Data 'cleaning' is particularly important for data sourced from species distribu
 My example species, the blue morpho butterfly *Morpho menelaus*, lives in South and Central American tropical rainforests. The points in Northern Europe seem pretty suspicious, on that basis; maybe they're tagged incorrectly, and are actually captive individuals in a zoo, or even dead preserved specimens? If you have data points in suspicious locations, take a look at them by filtering the latitude or longitude:
 
 ```{r}
-test1  <-  which(df$lon < 250) #tagging all points that aren't in the Americas, by longitude
-map("world2",col = "lightgreen",
-     xlim = range(df$lon,na.rm = T), 
-     ylim = range(df$lat,na.rm = T))
+test1  <-  which(df$lon360 < 250) #tagging all points that aren't in the Americas, by longitude
+map("world2",col = "green",
+     xlim = range(df$lon360,na.rm = T) + c(-1,1), 
+     ylim = range(df$lat,na.rm = T) + c(-1,1))
 map.axes()
-points(df$lon,df$lat,col = "red",pch = 20)
-points(df[test1,]$lon,df[test1,]$lat,col = "black",pch = 21) #circle the flagged points in black
+points(df$lon360,df$lat,col = "red",pch = 20)
+points(df[test1,]$lon360,df[test1,]$lat,col = "black",pch = 21) #circle the flagged points in black
 ```
 
 All the points we've identified as being in the wrong place are now circled in black. What can we find out about them?
 ```{r}
 df[test1,]
 ```
-These butterflies are in Antwerp, in Belgium, where there is a very famous zoo, and when I search for information about it, it appears it has a butterfly garden! I suspect these are captive specimens, so I want to exclude them from my data set.
+These butterflies are in Antwerp, in Belgium, where there is a very famous zoo -- and when I search for information about it, it appears it has a butterfly garden! I suspect these are captive specimens, so I want to exclude them from my data set.
 
-```{r,eval = F}
+```{r}
 remove  <-  c(test1)
 df <- df[-remove,] #remove the incorrect points
 rm(remove)
 ```
 
 What's left?
-```{r,eval = F}
-map("world2",col = "lightgreen",
-     xlim = range(df$lon,na.rm = T), 
-     ylim = range(df$lat,na.rm = T))
+```{r}
+map("world2",col = "green",
+     xlim = range(df$lon360,na.rm = T) + c(-1,1), 
+     ylim = range(df$lat,na.rm = T) + c(-1,1))
 map.axes()
-points(df$lon,df$lat,col = "red",pch = 20)
+points(df$lon360,df$lat,col = "red",pch = 20)
 ```
-Those all look like reasonable places. In a longer-term research project intended for publication, you would spend a lot more time on the data cleaning step, and indeed there are programs and functions for doing exactly that, but for today let's leave it here.
+
+Those all look like reasonable places for blue morphos to live. Keep cleaning yours until you've gotten rid of any other data points that make no sense.
+
+In a longer-term research project intended for publication, you would spend a lot more time on the data cleaning step, and indeed there are programs and functions for doing exactly that, but for today let's leave it here.
 
 ## Mapping species range
 
@@ -700,21 +706,21 @@ Now, how should we visualize the species range? We'll start by drawing a polygon
 
 ```{r}
 require(sf); require(concaveman) #load mapping libraries
-sfdata <- st_as_sf(df,coords = c("lon","lat")) #this reformats the coordinate points into a special data structure
+sfdata <- st_as_sf(df,coords = c("lon360","lat")) #this reformats the coordinate points into a special data structure
 
-conc <- concaveman(sfdata,concavity = 3) #this is called a concave hull, it's a polygon that contains all the points
+conc <- concaveman(sfdata,concavity = 3,length_threshold = 0) #this is called a concave hull, it's a polygon that contains all the points
 
-conv <- convHull(df[,c("lon","lat")]) #this is called a convex hull, it's just a polygon drawn around all the points that stick out the most
+conv <- convHull(df[,c("lon360","lat")]) #this is called a convex hull, it's just a polygon drawn around all the points that stick out the most
 ```
 
 Then make a map that shows the concave and convex hulls:
 
 ```{r}
-map("world2",col = "lightgreen",
-     xlim = range(df$lon,na.rm = T), 
-     ylim = range(df$lat,na.rm = T))
+map("world2",col = "green",
+     xlim = range(df$lon360,na.rm = T) + c(-1,1), 
+     ylim = range(df$lat,na.rm = T) + c(-1,1))
 map.axes()
-points(df$lon,df$lat,col = "red",pch = 20)
+points(df$lon360,df$lat,col = "red",pch = 20)
 plot(conv,add = T,col = rgb(1,1,0,0.3),lty = "blank")
 plot(conc,add = T,col = rgb(1,0,0,0.3),lty = "blank")
 legend("topright",col = c(rgb(1,1,0,0.3),rgb(1,0,0,0.3)),
@@ -730,15 +736,16 @@ To save your map to your class file, click Export\>Save as Image. Give it a name
 Download the climatic data from the WorldClim website.
 
 ```{r}
-require(geodata)
-path <- "geodata/present/"
-climate <- worldclim_global(var = 'bio',res = 2.5,path = tempdir())
-climate
+require(geodata); require(raster);require(here)
+climate <- worldclim_global(var = 'bio',res = 2.5,path = here())
+climate <- stack(climate)
 ```
 
 The variable `climate` now contains a special data structure called a "RasterStack", which consists of some number of matrixes of exactly the same dimensions. (Think of it like a neatly aligned stack of maps.)
 
 ```{r}
+names(climate) #these names are annoyingly long, let's rename them
+names(climate) <- unlist(sapply(1:19,function(x) paste0("bio",x)))
 names(climate)
 ```
 
@@ -746,27 +753,29 @@ In the case of this climate data file that we just downloaded, those maps contai
 
 ### Viewing the environmental data
 
-You can plot any one of the layers to have a look at it. (Note the double brackets "[[]]" in the call to the 'climate' object -- this is required in order to call a component of a /list/ object.)
+You can plot any one of the layers to have a look at it. Call it by its name, using the $ operator, as an argument to the plot() function.
 
 ```{r}
-plot(climate[[1]])
+plot(climate$wc2.1_2.5m_bio_1)
 ```
 
-This layer, `bio1`, is the average annual temperature. To see what each of the 19 bioclimatic variables means, look at <https://www.worldclim.org/data/bioclim.html>. Temperature measurements are given in tenths of a degree Celsius; precipitation is in millimeters. Then you can plot your own species occurrence data on top of it, restricting the range the same way we did in part 3:
+This layer, `bio1`, is the average annual temperature. To see what each of the 19 bioclimatic variables means, look at <https://www.worldclim.org/data/bioclim.html>. Temperature measurements are given in tenths of a degree Celsius; precipitation is in millimeters. 
+
+Then you can plot your own species occurrence data on top of it, restricting the range of the map to the range of your occurrences plus 1 degree in each direction, the same way we did in part 3. The climate data layers report longitude as going from -180 to 180, so we have to go back to the original longitude column ("lon", not "lon360"): 
 
 ```{r}
-plot(climate[[1]],
-     xlim = range(df$lon,na.rm = T), 
-     ylim = range(df$lat,na.rm = T))
+plot(climate$wc2.1_2.5m_bio_1,
+     xlim = range(df$lon,na.rm = T) + c(-1,1), 
+     ylim = range(df$lat,na.rm = T) + c(-1,1))
 points(df$lon,df$lat,col = "red",pch = 20)
 ```
 
-Try this with each of the bioclimatic data layers in `bioclim` (`bio1` through `bio19`).
 
 ------------------------------------------------------------------------
 
 ### Thinking about it
 
+Try this with each of the bioclimatic data layers in `bioclim` (`bio1` through `bio19`).
 -   Do any of the bioclimatic variables seem to be important in controlling the range of your species?
 -   If so, which ones? Save the images to your class folder for later reference.
 -   What do you think about this? -- Are you surprised by the results? -- Can you think of a reason why these particular climatic variables might have a lot to do with the possible range of your species?
