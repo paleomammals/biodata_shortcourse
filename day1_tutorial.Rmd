@@ -756,7 +756,7 @@ In the case of this climate data file that we just downloaded, those maps contai
 You can plot any one of the layers to have a look at it. Call it by its name, using the $ operator, as an argument to the plot() function.
 
 ```{r}
-plot(climate$wc2.1_2.5m_bio_1)
+plot(climate$bio1)
 ```
 
 This layer, `bio1`, is the average annual temperature. To see what each of the 19 bioclimatic variables means, look at <https://www.worldclim.org/data/bioclim.html>. Temperature measurements are given in tenths of a degree Celsius; precipitation is in millimeters. 
@@ -764,7 +764,7 @@ This layer, `bio1`, is the average annual temperature. To see what each of the 1
 Then you can plot your own species occurrence data on top of it, restricting the range of the map to the range of your occurrences plus 1 degree in each direction, the same way we did in part 3. The climate data layers report longitude as going from -180 to 180, so we have to go back to the original longitude column ("lon", not "lon360"): 
 
 ```{r}
-plot(climate$wc2.1_2.5m_bio_1,
+plot(climate$bio1,
      xlim = range(df$lon,na.rm = T) + c(-1,1), 
      ylim = range(df$lat,na.rm = T) + c(-1,1))
 points(df$lon,df$lat,col = "red",pch = 20)

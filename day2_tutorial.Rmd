@@ -24,7 +24,7 @@ load(file = "day1.RData")
 ```
 
 ```{r}
-require(geodata);require(dismo);require(maps)
+require(geodata);require(dismo);require(maps);require(here)
 ```
 
 We're going to use the climate data you downloaded and the species occurrence data you constructed to model the influence of the climate variables on your species' range.
@@ -45,6 +45,11 @@ Now that we have the relationship between climate variables and your species, we
 
 ```{r}
 p <- predict(climate,m1,progress = "text")
+```
+
+We will save and reload this file to get it out of RAM:
+```{r}
+p <- reload_raster(p)
 ```
 
 We can plot this just like we plotted the bioclim environmental layers:
@@ -69,7 +74,7 @@ plot(p, main = "Bioclim model prediction",
 plot(p, main = "Climate envelope model prediction with GBIF occurrences",
   xlim = range(df$lon,na.rm = T), 
   ylim = range(df$lat,na.rm = T))
-points(df$lon,df$lat,col = rgb(0,0,0,0.5),pch = 20,cex = 0.5) #make the points smaller so they don't get in the way too much
+points(df$lon,df$lat,col = rgb(1,0,0,0.5),pch = 20,cex = 0.5) #make the points smaller so they don't get in the way too much
 ```
 
 The Bioclim method doesn't do a particularly good job of predicting the species distribution for the blue morphos. Notice how some of the most suitable areas don't have any specimens at all, and many of the specimens are from places with low modeled suitability. Either the climate isn't the main factor in where they can live, or the sampling is not very good, or both.
@@ -104,7 +109,7 @@ map("world2",col = "green",
      ylim = range(df$lat,na.rm = T) + c(-1,1))
 map.axes()
 points(df$lon360,df$lat,col = "red",pch = 20)
-points(transformlong(backgr[,"x"]),backgr[,"y"],col = "blue") #there they are
+points(transform_lon(backgr[,"x"]),backgr[,"y"],col = "blue") #there they are
 ```
 
 The blue circles are the fake long/lat points that we just made up for locations where the species is absent. We'll extract the "absent" climate values and assemble them into a table with the "presence" values.
@@ -165,6 +170,11 @@ Now to make the prediction map for the other model:
 ```{r}
 q <- predict(climate,m2,progress = "text")
 ```
+Save and reload it:
+
+```{r}
+q <- reload_raster(q)
+```
 
 And plot it:
 
@@ -180,7 +190,7 @@ We can add the occurrence points to this map too:
 plot(q, main = "Linear model prediction with GBIF occurrences",
   xlim = range(df$lon,na.rm = T), 
   ylim = range(df$lat,na.rm = T))
-points(df$lon,df$lat,col = rgb(0,0,0,0.5),pch = 20,cex = 0.5)
+points(df$lon,df$lat,col = rgb(1,0,0,0.5),pch = 20,cex = 0.5)
 ```
 
 The difference between the `bioclim` model and the `glm` model, other than the scale of the suitability metric, is that the former doesn't use the information about combinations of the different climate variables. You can see that the linear model did better at overlapping with the blue morpho's real range -- the areas with higher occurrence densities are more green.
@@ -198,7 +208,7 @@ In this section you are going to examine the mean annual temperature for this lo
 To load the paleoclimate and future climate data, run the following:
 
 ```{r}
-load("climatelayers.RData", verbose = T)
+source("assemble-paleoclimate.R")
 ```
 
 Examine the objects that it just loaded. These are four RasterStacks: `lgm` (Last Glacial Maximum, about 22,000 years ago), `midH` (Mid-Holocene, about 6000 years ago), `modern` (2000 CE), and `future` (projected climate for 2070 CE).
@@ -227,7 +237,6 @@ future_UCM <- extract(future,UCM_lonlat)
 #combine all four into a data frame
 climate_UCM <- data.frame(rbind(lgm_UCM,midH_UCM,modern_UCM,future_UCM))
 rownames(climate_UCM) <- c("LGM","MidH","Modern","Future")
-colnames(climate_UCM) <- colnames(modern_UCM)
 climate_UCM
 ```
 
@@ -290,21 +299,21 @@ rm(gbif,neotoma_lonlat)
 
 Now you have three variables containing the occurrences of your species for the last glacial maximum (\~22,000 years BP), mid-Holocene (\~6,000 years BP), and modern (within the last 200 years).
 
-You can map them all on top of each other.
+You can map them all on top of each other. (Don't forget, we have to transform the longitude so that it can be plotted on the map.)
 
 ```{r}
-xrange <- range(c(data_lgm$lon,data_midH$lon,data_now$lon),na.rm = T) + c(-5,5)
+xrange <- transform_lon(range(c(data_lgm$lon,data_midH$lon,data_now$lon),na.rm = T)) + c(-5,5)
 yrange <- range(c(data_lgm$lat,data_midH$lat,data_now$lat),na.rm = T) + c(-5,5)
 
 require(maps) #load the mapping library
-data(wrld_simpl)
-plot(wrld_simpl,axes = TRUE,col = "green", xlim = xrange, ylim = yrange,
-     main = paste(species_name,"",sep = " "))
-points(data_now$lon,data_now$lat,col = "red",pch = 20,cex = 0.8)
-points(data_midH$lon,data_midH$lat,col = "black",pch = 20,cex = 0.8)
-points(data_lgm$lon,data_lgm$lat,col = "gold",pch = 20,cex = 0.8)
+map("world2",col = "grey",
+     xlim = xrange,ylim = yrange)
+map.axes()
+points(transform_lon(data_now$lon),data_now$lat,col = "maroon1",pch = 20,cex = 0.8)
+points(transform_lon(data_lgm$lon),data_lgm$lat,col = "blue",pch = 20,cex = 0.8)
+points(transform_lon(data_midH$lon),data_midH$lat,col = "darkorchid",pch = 20,cex = 0.8)
 #move the legend to a different corner by changing the value of the argument "x"
-legend(x = "bottomleft",legend = c("22,000ybp (LGM)","6,000ybp (Mid-Holocene","Present"),pch = 20,col = c("gold","black","red"))
+legend(x = "bottomleft",legend = c("22,000ybp (LGM)","6,000ybp (Mid-Holocene","Present"),pch = 20,col = c("blue","darkorchid","maroon1"))
 ```
 
 In the *Microtus pennsylvanicus* example, the vole's range shifts northward through each step.
@@ -323,13 +332,13 @@ We can make a linear model of the climate envelope just like before. This time w
 presvals22k <- extract(lgm, data_lgm[,c("long","lat")])
 presvals6k <- extract(midH, data_midH[,c("long","lat")])
 presvals0 <- extract(modern, data_now[,c("lon","lat")])
-presvals <- rbind(presvals22k,presvals6k,presvals0) #put all presence values together into a single data table
+presvals <- data.frame(rbind(presvals22k,presvals6k,presvals0)) #put all presence values together into a single data table
 dim(presvals)
 ```
 
 ```{r}
 set.seed(0) #initialize random number generator
-backgr <- rbind(randomPoints(modern, nrow(presvals)*(1/0.85)))
+backgr  <-  randomPoints(mask = modern, n = nrow(presvals)*(1/0.85))
 absvals <- rbind(extract(lgm, backgr),
                  extract(midH,backgr),
                  extract(modern,backgr)) #extract climate values at those points
@@ -343,22 +352,33 @@ Again we use the linear model to make estimates of climate suitability at every 
 
 ```{r}
 names(midH) <- names(lgm) <- names(future) <- names(modern)
+
 predlgm <- predict(lgm,mod,progress = "text")
+predlgm <- reload_raster(predlgm)
+
 predmidH <- predict(midH,mod,progress = "text")
+predmidH <- reload_raster(predmidH)
+
 prednow <- predict(modern,mod,progress = "text")
+prednow <- reload_raster(prednow)
+
 pred2070 <- predict(future,mod,progress = "text")
+pred2070 <- reload_raster(pred2070)
 ```
 
 And plot them:
 
 ```{r}
-par(mfrow = c(2,2))
+xrange <- range(c(data_lgm$lon,data_midH$lon,data_now$lon),na.rm = T) + c(-5,5)
+yrange <- range(c(data_lgm$lat,data_midH$lat,data_now$lat),na.rm = T) + c(-5,5)
+
+par(mfrow = c(2,2),mar = c(1,3,4,1))
 plot(predlgm, main = "22,000kya",xlim = xrange,ylim = yrange)
 points(data_lgm$lon,data_lgm$lat,col = "blue",pch = 20,cex = 0.8)
 plot(predmidH, main = "6,000kya",xlim = xrange,ylim = yrange)
-points(data_midH$lon,data_midH$lat,col = "black",pch = 20,cex = 0.8)
+points(data_midH$lon,data_midH$lat,col = "darkorchid",pch = 20,cex = 0.8)
 plot(prednow, main = "today",xlim = xrange,ylim = yrange)
-points(data_now$lon,data_now$lat,col = "red",pch = 20,cex = 0.8)
+points(data_now$lon,data_now$lat,col = "maroon1",pch = 20,cex = 0.8)
 plot(pred2070, main = "2070CE",xlim = xrange,ylim = yrange)
 ```
 
