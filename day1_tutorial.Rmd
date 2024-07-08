@@ -15,7 +15,7 @@ This tutorial is based on two sources:
 
 2.  <https://rspatial.org/raster/sdm/index.html> by Robert J. Hijmans and Jane Elith.
 
-# How to use this tutorial document
+# Part 1. How to use this tutorial document
 
 This file should have opened in a web browser window. It doesn't run anything in R by itself; instead you will need to copy and paste (or retype) commands from it.
 

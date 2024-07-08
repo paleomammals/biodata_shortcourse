@@ -63,9 +63,11 @@ The suitability score goes from 0 to 1. A point that had a suitability of 1 woul
 This model seems to think that the most suitable habitat for blue morpho butterflies is all the areas in the world with tropical rainforest. Let's zoom the map in on the range containing the actual data points, like we did before...
 
 ```{r}
+xrange <- range(df$lon,na.rm = T) + c(-1,1)
+yrange <- range(df$lat,na.rm = T) + c(-1,1)
+
 plot(p, main = "Bioclim model prediction",
-  xlim = range(df$lon,na.rm = T) + c(-1,1), 
-  ylim = range(df$lat,na.rm = T) + c(-1,1))
+  xlim = xrange, ylim = yrange)
 ```
 
 ...and also put in the occurrence points.
@@ -98,7 +100,7 @@ presvals <- extract(climate, df[,c("lon","lat")])
 dim(presvals)
 set.seed(0) #initialize random number generator
 #make up some fake long/lat points
-backgr  <-  randomPoints(mask = climate, n = max(c(nrow(df),500)),
+backgr  <-  randomPoints(mask = climate, n = max(c(nrow(df),500)), p = presvals,
                          ext = extent(rbind(range(df$lon),range(df$lat)))) 
 ```
 
@@ -201,9 +203,42 @@ The difference between the `bioclim` model and the `glm` model, other than the s
 
 ------------------------------------------------------------------------
 
+### MaxEnt model
+
+One more model algorithm. This one is called "MaxEnt" (for "Maximum Entropy"), and it's a machine learning model. That is, it uses /part/ of the data set of occurrence locations to create its initial estimate of the species' climate niche; then it tests that estimate using the remaining points, and tweaks the model to make it more accurate. This is the algorithm most commonly used to model species distributions in published studies. It doesn't use absence points; instead, it treats all the empty cells on the climate map (all the points without species occurrences) as absence points.  
+
+```{r}
+m3 <- maxent(x = climate, p = df[,c("lon","lat")])
+```
+```{r}
+r <- predict(climate, m3, progress = "text")
+r <- reload_raster(r)
+```
+
+```{r}
+plot(r, main = "MaxEnt model prediction with GBIF occurrences",
+  xlim = range(df$lon,na.rm = T), 
+  ylim = range(df$lat,na.rm = T))
+points(df$lon,df$lat,col = rgb(1,0,0,0.5),pch = 20,cex = 0.5)
+```
+
+------------------------------------------------------------------------
+
+**Question:** How well did the MaxEnt model predict your species range compared to the other two, just based on visual comparison?
+
+------------------------------------------------------------------------
+
+### Comparing the different models
+
+
+
+
+
 # Part 2. Climate change and environmental variables
 
-In this section you are going to examine the mean annual temperature for this location (UC Merced) in the past, present, and projected future.
+So far we've used only modern climate data and occurrences. However, we know that climate changes over time: 22,000 years ago, we were in an ice age, and many species were present in very different places. Climate scientists have produced very detailed maps of the climatic conditions on Earth in the relatively recent past (especially for the last 3 million years or so). What can we do with estimates of /past/ climate -- that is, /paleoclimate/?
+
+In this section you are going to be introduced to paleoclimate data sets. We'll start by examining the mean annual temperature for your current location (UC Merced) in the past, present, and projected future, and then you'll do the same for another location that you choose yourself.
 
 To load the paleoclimate and future climate data, run the following:
 
@@ -251,9 +286,9 @@ plot(climate_UCM$bio1/10) #divide by 10 to get degrees C
 This is a very simple plot of the data. The points aren't connected, the axes aren't labeled, there's no title, and the x-axis is not scaled by time. We can also do a more sophisticated version:
 
 ```{r}
-date <- c(-22000, -6000, 0, 50)
+date <- c(-22000, -6000, 1, 50)
 plot(x = date, y = climate_UCM$bio1/10,
-     type = "o", 
+     type = "o", log = "x",
      main = "Temperature at UC Merced", 
      xlab = "Years before present", ylab = "Mean annual temp (degrees C)")
 ```
@@ -338,7 +373,7 @@ dim(presvals)
 
 ```{r}
 set.seed(0) #initialize random number generator
-backgr  <-  randomPoints(mask = modern, n = nrow(presvals)*(1/0.85))
+backgr  <-  randomPoints(mask = modern, n = nrow(presvals)*(1/0.85), p = presvals)
 absvals <- rbind(extract(lgm, backgr),
                  extract(midH,backgr),
                  extract(modern,backgr)) #extract climate values at those points
@@ -373,13 +408,13 @@ xrange <- range(c(data_lgm$lon,data_midH$lon,data_now$lon),na.rm = T) + c(-5,5)
 yrange <- range(c(data_lgm$lat,data_midH$lat,data_now$lat),na.rm = T) + c(-5,5)
 
 par(mfrow = c(2,2),mar = c(1,3,4,1))
-plot(predlgm, main = "22,000kya",xlim = xrange,ylim = yrange)
+plot(predlgm, main = "22,000 ya",xlim = xrange,ylim = yrange)
 points(data_lgm$lon,data_lgm$lat,col = "blue",pch = 20,cex = 0.8)
-plot(predmidH, main = "6,000kya",xlim = xrange,ylim = yrange)
+plot(predmidH, main = "6,000 ya",xlim = xrange,ylim = yrange)
 points(data_midH$lon,data_midH$lat,col = "darkorchid",pch = 20,cex = 0.8)
 plot(prednow, main = "today",xlim = xrange,ylim = yrange)
 points(data_now$lon,data_now$lat,col = "maroon1",pch = 20,cex = 0.8)
-plot(pred2070, main = "2070CE",xlim = xrange,ylim = yrange)
+plot(pred2070, main = "2070 CE",xlim = xrange,ylim = yrange)
 ```
 
 ------------------------------------------------------------------------

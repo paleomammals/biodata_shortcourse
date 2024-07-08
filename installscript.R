@@ -6,6 +6,8 @@ install.packages("geodata")
 install.packages("terra")
 install.packages("raster")
 install.packages("here")
+install.packages("rJava")
+
 transform_lon <- function(longitude) {
   result <- longitude
   k <- which(result < 0)
@@ -14,6 +16,6 @@ transform_lon <- function(longitude) {
 }
 reload_raster <- function(rasterlayer) {
   filestring <- paste0(c("temp/",as.character(substitute(rasterlayer)),".tif"),collapse="")
-  writeRaster(rasterlayer, filename = filestring, overwrite = TRUE)
+  writeRaster(rasterlayer, filename = filestring, gdal = "COMPRESS=DEFLATE", overwrite = TRUE)
   return(raster(rast(filestring)))
 }

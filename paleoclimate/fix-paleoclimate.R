@@ -36,4 +36,4 @@ for (i in I:length(filenames)) {
   writeRaster(temp, filename = filenames.new[i], overwrite = T, gdal = "COMPRESS=DEFLATE")
   setTxtProgressBar(pb,i)
 }
- close(pb)
+close(pb)

@@ -1,7 +1,7 @@
 #download Neotoma data
 names<-c("Microtus pennsylvanicus", "Lynx rufus", "Lontra canadensis", 
-         "Marmota flaviventris", "Erethizon dorsata", 
-         "Bison bison", "Blarina brevicauda", "Lepus californicus")
+         "Marmota flaviventris", "Erethizon dorsata", "Bison bison", 
+         "Blarina brevicauda", "Lepus californicus", "Canis latrans")
 #require(neotoma2)
 neotomadata<-vector("list", length(names))
 names(neotomadata)<-names
