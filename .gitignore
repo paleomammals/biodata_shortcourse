@@ -4,9 +4,10 @@
 .Ruserdata
 gbif-raw.RData
 data.csv
-temp/*.tif
+temp/*
 day1.RData
 climatelayers.RData
 climate/
 uncorrected-paleoclimate/
 paleoclimate_temp/
+climatemodel.RData

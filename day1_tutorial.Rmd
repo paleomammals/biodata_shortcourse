@@ -33,7 +33,7 @@ the tutorial will display two code boxes.
 
 # Part 2. Getting started with RStudio
 
-Find the file "installscript.R" in the class network directory where you found this tutorial, and choose RStudio to open it in the RStudio program. RStudio is a development environment for R, which means it provides a graphical interface for writing code in the R programming language.
+Find the file "start.R" in the class network directory where you found this tutorial, and choose RStudio to open it in the RStudio program. RStudio is a development environment for R, which means it provides a graphical interface for writing code in the R programming language.
 
 The RStudio interface has four main panels:
 
@@ -65,7 +65,7 @@ If you can't figure out why your command isn't running, you can click inside the
 
 ### Using the command prompt
 
-Once your libaries are finished installing and it shows a command prompt, run the following command by typing or pasting it into the console and hitting Enter:
+Once your libraries are finished installing and it shows a command prompt, run the following command by typing or pasting it into the console and hitting Enter:
 
 ```{r}
 getwd()
@@ -86,7 +86,7 @@ sum(9,6) #you can also use functions instead of arithmetic symbols
 
 ## The script editor
 
-Now try the script editor (top left window in RStudio). Paste in the following:
+Now try the script editor (top left window in RStudio). In your "start.R" window, paste in the following:
 
 ```{r}
 # I am adding 3 and 5!
