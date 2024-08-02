@@ -743,11 +743,11 @@ folder and show them to the instructor.</li>
 </ol>
 </div>
 </div>
-<div id="part-4.-modeling-with-paleoclimate-data" class="section level1">
-<h1>Part 4. Modeling with paleoclimate data</h1>
+<div id="part-3.-modeling-with-paleoclimate-data" class="section level1">
+<h1>Part 3. Modeling with paleoclimate data</h1>
 <p>Now that you’ve looked at both paleoclimate data and paleobiological
 data, we can put them together to predict future species distributions.
-We’re going to use the Maxent model because it usually makes the best
+We’re going to use the GLM model because it usually makes the better
 predictions.</p>
 <div id="loading-the-fossil-occurrence-data" class="section level2">
 <h2>Loading the fossil occurrence data</h2>
@@ -763,7 +763,7 @@ names(neotoma_lonlat)</code></pre>
 ## [3] &quot;Lontra canadensis&quot;       &quot;Marmota flaviventris&quot;   
 ## [5] &quot;Erethizon dorsatum&quot;      &quot;Bison bison&quot;            
 ## [7] &quot;Blarina brevicauda&quot;      &quot;Lepus californicus&quot;</code></pre>
-<p>Find the organism you investigated in part 3 in the list of names.
+<p>Choose an organism from the new list.
 For the example organism, I’m going to use <em>Microtus
 pennsylvanicus</em> which is number 1 in both these lists, but you
 should use a different one. Assign the index of your organism in the
