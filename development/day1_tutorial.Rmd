@@ -1,8 +1,12 @@
 ---
 title: "Day 1"
-author: "Val Syverson"
+author: "Val Syverson, with updates by Jessica Blois"
 date: "`r Sys.Date()`"
-output: html_document
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: united
 ---
 
 ```{r setup, include = FALSE}
@@ -22,29 +26,33 @@ This file should have opened in a web browser window. It doesn't run anything in
 Whenever you see something like this,
 
 ```{r}
-print("hello world") #comments look like this; you don't have to copy them
+print("hello world") # comments look like this; you don't have to copy them
 ```
 
 the tutorial will display two code boxes.
 
--   The box **without** the two hash characters (\##) contains the **command**, which is [the text that you will run in R]{.underline}. (Inside the command, anything that starts with a single \# and is displayed in grey is just a comment; you don't have to run it.)
+-   The box **without** the two hash characters (\##) contains the **command**, which is [the text that you will run in R]{.underline}. To run something in R, simply copy the text in the gray codebox into your console and press Return.
+    
+    -   *Note: Inside the command, anything that starts with a single \# and is displayed in grey is just a comment; you don't have to run it, but it doesn't hurt anything if you copy and paste it into R.*
 
--   The box **with** the \## is the **result**, which should correspond to what will be printed by your console window.
+-   The box **with** the \## is the **result**, which should correspond to what will be printed in your console window.
 
 # Part 2. Getting started with RStudio
 
-Find the file "start.R" in the class network directory where you found this tutorial, and choose RStudio to open it in the RStudio program. RStudio is a development environment for R, which means it provides a graphical interface for writing code in the R programming language.
+Find the file "installscript.R" in the class network directory where you found this tutorial, and choose RStudio to open it in the RStudio program. RStudio is a development environment for R, which means it provides a graphical interface for writing code in the R programming language.
 
 The RStudio interface has four main panels:
 
--   **Console**: where you can type commands and see output. The console is all you would see if you ran R in the command line without RStudio.
+-   **Console**: where you can type commands and see output. The console is all you would see if you ran R in the command line without RStudio. It's the green box in the image below.
 
--   **Script editor**: where you can type out commands and save to file. You can also submit the commands to run in the console. Right now it's showing "installscript.R".
+-   **Script editor**: where you can type out commands and save to file. You can also submit the commands to run in the console. Right now it's showing "installscript.R". It's the red box in the image below.
 
--   **Environment** shows all active objects and History keeps track of all commands run in the console.
+-   **Environment** shows all active objects and History keeps track of all commands run in the console. It's the blue box in the image below.
 
--   **Files/Plots/Packages/Help**: several different tabs that show the active directory, plots, installed packages (more about this later), help files, etc.
+-   **Files/Plots/Packages/Help**: several different tabs that show the active directory, plots, installed packages (more about this later), help files, etc. It's the yellow box in the image below.
 
+![Screenshot of the RStudio panels](images/R Console Screenshot.png)\
+  
 First you're going to use the script editor (top left panel). Click "Source" in the top right of this panel to run the "installscript.R" script, which will install all the libraries you'll need for this course. While it's running, look at the other panels too.
 
 Next find the **console** (the bottom left panel). When you type something into this command-line interface and hit Enter, the text you entered will be run in the R processor and the results will be returned. Right now you'll see a bunch of text scrolling by as it installs the packages.
@@ -53,11 +61,13 @@ Next find the **console** (the bottom left panel). When you type something into 
 
 Interpreting the command prompt can help understand when R is ready to accept commands. Below lists the different states of the command prompt and how you can exit a command:
 
--   Console is ready to accept commands: \>.
+-   Console is ready to accept commands: \>
 
-If R is ready to accept commands, the R console shows a \> prompt. When the console receives a command (by directly typing into the console or running from the script editor (Ctrl-Enter), R will try to execute it. After running, the console will show the results and come back with a new \> prompt to wait for new commands.
+If R is ready to accept commands, the R console shows a \> prompt. Can you find this on your own screen?
 
--   Console is waiting for you to enter more data: +.
+When the console receives a command (by directly typing into the console or running from the script editor (Ctrl-Enter), R will try to execute it. After running, the console will show the results and come back with a new \> prompt to wait for new commands.
+
+-   Console is waiting for you to enter more data: +
 
 If R is still waiting for you to enter more data because the code sent to the console isn't a complete command yet, the console will show a + prompt. It means that you haven't finished entering a complete command. Often this can be due to you having not 'closed' a parenthesis or quotation.
 
@@ -84,9 +94,19 @@ Try some other stuff to see how this works.
 sum(9,6) #you can also use functions instead of arithmetic symbols
 ```
 
+Now, try something deliberately wrong. Copy and paste this line of code into your console:
+
+```{r eval=FALSE}
+9+6+ 
+```
+
+If you look at your console, you will see that instead of an answer (`15`), you see the + underneath a line of code that says `9+6+`. To complete the equation, type a `0` after the +. You have now 'closed' the line of code and gotten your answer. 
+
+Remember, you can always click inside the console window and press the Escape key to escape the command and bring back a new prompt \>; then you can start over sending the command.
+
 ## The script editor
 
-Now try the script editor (top left window in RStudio). In your "start.R" window, paste in the following:
+Now try the script editor (top left window in RStudio). In your "installscript.R" window, paste in the following:
 
 ```{r}
 # I am adding 3 and 5!
@@ -97,29 +117,12 @@ It didn't run just because you wrote it in there. Highlight the pasted text and 
 
 This is useful for when you need to run the same command multiple times, such as when you're trying to get something right -- that's why it's called the "editor". You should make a habit of writing your commands in the code editor instead of the console, because then you can easily check them later to see exactly how you did it.
 
-## Syntax 
+### Syntax 
 
 Notice that the English comment in there started with the *comment symbol*, `#`. What happens if we do that same command without the `#`? Re-run the command after removing the `#` sign in the front: `I am adding 3 and 5. R is fun!` `3 + 5` Now R is trying to run that sentence as a command, and it doesn't work. We get an error in the console "Error: unexpected symbol in"I am" means that the R interpreter did not know what to do with that command." **Things sent to the console won't work unless they are properly constructed commands in the R language.**
 
 Use the \# character to insert comments about what your code is doing. This, again, makes it easier to understand your own work later.
 
-#### The command prompt
-
-Interpreting the command prompt can help understand when R is ready to accept commands. Below lists the different states of the command prompt and how you can exit a command:
-
--   Console is ready to accept commands: \>.
-
-If R is ready to accept commands, the R console shows a \> prompt.
-
-When the console receives a command (by directly typing into the console or running from the script editor (Ctrl-Enter), R will try to execute it.
-
-After running, the console will show the results and come back with a new \> prompt to wait for new commands.
-
--   Console is waiting for you to enter more data: +.
-
-If R is still waiting for you to enter more data because the code sent to the console isn't a complete command yet, the console will show a + prompt. It means that you haven't finished entering a complete command. Often this can be due to you having not 'closed' a parenthesis or quotation.
-
-If you can't figure out why your command isn't running, you can click inside the console window and press the Escape key to escape the command and bring back a new prompt \>; then you can start over sending the command.
 
 ### Assignment operator
 
