@@ -36,18 +36,19 @@ We will be using a program called R for our programming, with a graphical userfa
 
 ### Day 1
 #### 9:05-10:20 - Session 1
-- Introductions & Course Overview
-- Day 1 Tutorial. Parts 1 & 2
+- 9:05 - 9:30am Introductions & Course Overview
+- 9:30 - 10:20am Day 1 Tutorial. Parts 1 & 2
 
-10:20-10:30 - Snack Time 
+#### 10:20-10:30 - Snack Time 
 
-10:30-11:55 - Session 2
-- Day 1 Tutorial. Part 3
+#### 10:30-11:55 - Session 2
+- Day 1 Tutorial. Wrap up Part 2 and start Part 3
 
-12:00-12:45pm - Lunch @ Pavilion 
+#### 12:00-12:45pm - Lunch @ Pavilion 
 
-1:00-3:15 - Session 3
-- Day 1 Tutorial. Part 4
+#### 1:00-3:15 - Session 3
+- 1:00 - 3:00pm Day 1 Tutorial. Parts 3 and 4
+- 3:00 - 3:15pm Day 1 Tutorial. Part 5, save your work
 
 ### Day 2
 9:05-10:20 - Session 1

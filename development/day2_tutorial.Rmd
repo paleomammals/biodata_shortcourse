@@ -1,8 +1,12 @@
 ---
 title: "Day 2"
-author: "Val Syverson"
+author: "Val Syverson, with updates by Jessica Blois"
 date: "`r Sys.Date()`"
-output: html_document
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: united
 ---
 
 ```{r setup, include = FALSE}
@@ -20,7 +24,7 @@ source("installscript.R")
 ```
 
 ```{r,echo = F}
-load(file = "day1.RData")
+load(file = "Blois_Day1.RData")
 ```
 
 ```{r}
@@ -63,7 +67,7 @@ p <- predict(climate,m1,progress = "text")
 
 We will save and reload this file to get it out of RAM:
 ```{r}
-p <- reload_raster(p)
+# p <- reload_raster(p)
 ```
 
 We can plot this just like we plotted the bioclim environmental layers:
@@ -105,7 +109,7 @@ The Bioclim method doesn't do a particularly good job of predicting the species 
 
 There are other functions that can make linear models. A linear model is an equation that describes how the value of each of the climate variables in a particular spot on the map influences the likelihood that the species will occur in that spot.
 
-To use them we're going to need to make some points in places where your species *isn't* present, so that we can compare them to the places where the species was actually found. The other model just used the background.
+To use them we're going to need to make some points in places where your species *isn't* present (or at least has not been documented to occur), so that we can compare them to the places where the species was actually found. The other model just used the background.
 
 First, get the values of the climate variables at the location of each of the species occurrences with the function `extract` from the `raster` package. This function takes two arguments, a RasterStack and a set of coordinates (GPS points), and returns a matrix of all the climate variables at all the locations.
 
@@ -125,7 +129,7 @@ backgr  <-  randomPoints(mask = raster(climate$bio1), n = max(nrow(df),1000),
 
 You can map the absence points we just made up.
 ```{r}
-map("world2",col = "green",
+map("world2",col = "darkgray",
      xlim = range(transform_lon(df$lon),na.rm = T) + c(-1,1), 
      ylim = range(df$lat,na.rm = T) + c(-1,1))
 map.axes()
@@ -134,7 +138,7 @@ points(transform_lon(backgr[,"x"]),backgr[,"y"],col = "lightblue", pch = 20)
 points(transform_lon(df[,"lon"]),df[,"lat"],col = "red",pch = 20)
 ```
 
-The blue circles are the fake long/lat points that we just made up for locations where the species is absent. We'll extract the "absent" climate values and assemble them into a table with the "presence" values.
+The blue circles are the fake long/lat points that we just made up for locations where the species is not documented to occur. We'll extract these "absent" climate values and assemble them into a table with the "presence" values.
 
 ```{r}
 absvals <- extract(climate, backgr) #extract climate values at those points
@@ -144,7 +148,7 @@ head(sdmdata) #rows with pb = 1 means the species was found at that location
 tail(sdmdata) #rows with pb = 0 means there's no occurrence at that location
 ```
 
-These presence and absence data can now be used to make a model using the function `glm()`.
+These presence and absence data can now be used to make a model using the function `glm()` (which is short for 'generalized linear model').
 
 ```{r}
 m2 <- glm(pb ~ bio1 + bio2 + bio3 + bio4 + bio5 + bio6 + bio7 + bio8 + bio9 + bio10 + bio11 + bio12 + bio13 + bio14 + bio15 + bio16 + bio17 + bio18 + bio19, data = sdmdata)
@@ -154,6 +158,7 @@ This is a linear model, so you can look at the p-values to assess whether each v
 
 ```{r}
 #element 0 is the intercept (predicted value if all climate variables are zero)
+summary(m2)
 pvalues <- summary(m2)$coefficients[,4]
 plot(pvalues, type = "n"); text(pvalues, labels = 0:19)
 ```
@@ -179,7 +184,7 @@ for (i in plotpredictors){
 }
 ```
 
-In these box plots, the points with x = 1 show the values of the predictor at the real occurrence points, while points with x = 0 show the values of the predictor variable at each of the fake absence points that we added. For my example species, compared to the absence points scattered across the rest of Central and South America, the presence points have a narrower range of values for these three significant variables. They prefer high temperatures overall (bio1), in both summer and winter (bio10, bio11), with low daily and annual temperature variation (bio2, bio4). In other words, it seems like blue morpho butterflies like living in the tropics because of their very stable, very warm temperatures, and the amount of precipitation doesn't matter as much to them.
+In these box plots, the points with x = 1 show the values of the predictor at the real occurrence points, while points with x = 0 show the values of the predictor variable at each of the fake absence points that we added. For my example species, compared to the absence points scattered across the rest of Central and South America, the presence points have a narrower range of values for these three significant variables. They prefer high temperatures overall (bio1), in both summer and winter (bio10, bio11), with low daily and annual temperature variation (bio2, bio4). In other words, it seems like blue morpho butterflies like living in the tropics because the tropics has very warm and very stable temperatures, and the amount of precipitation doesn't matter as much to them.
 
 ------------------------------------------------------------------------
 
@@ -187,7 +192,7 @@ In these box plots, the points with x = 1 show the values of the predictor at th
 
 ------------------------------------------------------------------------
 
-Now to make the prediction map for the other model:
+Now to make the prediction map for the linear model:
 
 ```{r}
 q <- predict(climate,m2,progress = "text")
@@ -195,7 +200,7 @@ q <- predict(climate,m2,progress = "text")
 Save and reload it:
 
 ```{r}
-q <- reload_raster(q)
+#q <- reload_raster(q)
 ```
 
 And plot it with the occurrence points:
@@ -218,7 +223,7 @@ The difference between the `bioclim` model and the `glm` model, other than the s
 
 ### Comparing the different models
 
-Higher value at a point on the map indicates that the model "thinks" the climate at that point is a good match for what the species likes (i.e. high habitat suitability). The maps we made show the locations of the actual occurrences, which lets you visually assess whether the real observations were found in places where the species is "expected" to live. Let's try assessing this quantitatively now, by extracting the values of the /model predictions/ at the observation locations and seeing whether each model is accurately predicting where the species has been observed.
+Higher value at a point on the map indicates that the model "thinks" the climate at that point is a good match for what the species likes (i.e. high habitat suitability). The maps we made show the locations of the actual occurrences, which lets you visually assess whether the real observations were found in places where the species is "expected" to live. Let's try assessing this quantitatively now, by extracting the values of the *model predictions* at the observation locations and seeing whether each model is accurately predicting where the species has been observed.
 
 ```{r}
 modelmatch <- data.frame(bioclim = extract(p, df[,c("lon","lat")]),
