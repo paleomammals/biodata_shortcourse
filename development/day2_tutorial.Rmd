@@ -15,7 +15,15 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Part 1. Mathematical modeling
 
-First make sure your workspace from yesterday is loaded: go to the Documents folder, choose the .Rdata file that you saved yesterday afternoon, and open it in RStudio. It should look exactly like it did yesterday when you left it.
+First make sure your workspace from yesterday is loaded. There are several options for doing this:
+- go to the Documents folder, choose the .Rdata file that you saved yesterday afternoon, and open it in RStudio. It should look exactly like it did yesterday when you left it.
+- Open RStudio, go to 'Session', then "Load Workspace". Navigate to your saved workspace and open it.
+- Load it directly within RStudio using the example code below.
+
+```{r, echo = T}
+load(file = "Blois_Day1.RData") # Replace the "Blois_Day1" with your filename. 
+```
+
 
 Run the package installation script again and load the packages you need for this morning.
 
@@ -23,19 +31,18 @@ Run the package installation script again and load the packages you need for thi
 source("installscript.R")
 ```
 
-```{r,echo = F}
-load(file = "Blois_Day1.RData")
-```
 
 ```{r}
 require(geodata);require(dismo);require(maps);require(here)
 ```
 
-We're going to use the climate data you downloaded and the species occurrence data you constructed to model the influence of the climate variables on your species' range.
+Because we can't be everywhere all the time, there are many dots on the map where a species is likely to occur, we just haven't observed it there yet. One way to predict where a species can be found is to build a model of the species distribution (also called the species range). 
+
+Today, we're going to use the climate data you downloaded and the species occurrence data you constructed yesterday to model (determine) the influence of the climate variables on your species' range.
 
 ## Predicting species presence from climate variables
 
-Climate envelope species distribution models describe the climate where a species currently lives (its climate "envelope") based on the values at all its known occurrences, and then use that to predict the suitability of all the other places. We'll try two different ways of making a climate envelope model.
+Species distribution models describe the climate where a species currently lives (its climate "envelope") based on the values at all its known occurrences, and then use that to predict the suitability of all the places it has not been observed at. We'll try two different ways of making a species distribution model.
 
 If you need to rebuild the `climate` raster stack, run the following lines:
 ```{r}
@@ -53,13 +60,17 @@ climate <- rast(climate)
 
 ### Bioclim model
 
-We can use the function `bioclim` to make a climate envelope model for the species distribution. The Bioclim model, specifically, compares the values of the climate variables at each point on the map to the values at the locations where the species is known to occur.
+We can use the function `bioclim` to make a simple species distribution model known as a "climate envelope model". The Bioclim model, specifically, compares the values of the climate variables at each point on the map to the values at the locations where the species is known to occur.
+
+Reminders:
+- the object `df` stores the occurrence points you collected yesterday.
+- To see what each of the 19 bioclimatic variables means, look at <https://www.worldclim.org/data/bioclim.html>. Temperature measurements are given in tenths of a degree Celsius; precipitation is in millimeters. 
 
 ```{r}
 m1 <- bioclim(stack(climate),df[,c("lon","lat")])
 ```
 
-Now that we have the relationship between climate variables and your species, we can predict its likelihood of occurring for *every* point on the map using the `predict` function.
+Now that we have the relationship between climate variables and your species known occurrences, we can predict its likelihood of occurring for *every* point on the map using the `predict` function.
 
 ```{r}
 p <- predict(climate,m1,progress = "text")
@@ -70,13 +81,13 @@ We will save and reload this file to get it out of RAM:
 # p <- reload_raster(p)
 ```
 
-We can plot this just like we plotted the bioclim environmental layers:
+We can plot the predicted 'climate suitability' (a prediction of the species distribution) just like we plotted the bioclim environmental layers:
 
 ```{r}
-plot(p, main = "Bioclim model")
+plot(p, main = "Bioclim model", plg=list(x="right", title="Suitability"))
 ```
 
-The suitability score goes from 0 to 1. A point that had a suitability of 1 would have all its climate values exactly at the median values for the occurrence points, so that doesn't usually happen; the highest values in this one are around 0.6.
+The suitability score ranges from 0 to 1. A point that had a suitability of 1 would have all its climate values exactly at the median values for the occurrence points, so that doesn't usually happen; the highest values in this model are around 0.6.
 
 This model seems to think that the most suitable habitat for blue morpho butterflies is all the areas in the world with tropical rainforest. Let's zoom the map in on the range containing the actual data points, like we did before...
 
@@ -85,33 +96,35 @@ xrange <- range(df$lon,na.rm = T) + c(-1,1)
 yrange <- range(df$lat,na.rm = T) + c(-5,5)
 
 plot(p, main = "Bioclim model prediction",
-  xlim = xrange, ylim = yrange)
+  xlim = xrange, ylim = yrange,
+  plg=list(x="right", title="Suitability"))
 ```
 
 ...and also put in the occurrence points.
 
 ```{r}
-plot(p, main = "Climate envelope model prediction with GBIF occurrences",
+plot(p, main = "Bioclim model prediction with occurrences",
   xlim = range(df$lon,na.rm = T), 
-  ylim = range(df$lat,na.rm = T))
+  ylim = range(df$lat,na.rm = T),
+  plg=list(x="right", title="Suitability"))
 points(df$lon,df$lat,col = rgb(1,0,0,0.5),pch = 20,cex = 0.5) #make the points smaller so they don't get in the way too much
 ```
 
-The Bioclim method doesn't do a particularly good job of predicting the species distribution for the blue morphos. Notice how some of the most suitable areas don't have any specimens at all, and many of the specimens are from places with low modeled suitability. Either the climate isn't the main factor in where they can live, or the sampling is not very good, or both.
+The Bioclim prediction doesn't appear to do a particularly good job of predicting the species distribution for the blue morphos. Notice how some of the most suitable areas don't have any specimens at all, and many of the specimens are from places with low modeled suitability. Either climate isn't the main factor in where the blue morphos can live, or the sampling is not very good, or both.
 
 ------------------------------------------------------------------------
 
-***Question:*** How did it do for your species? Save the plots to your folder.
+***Question:*** How well did the Bioclim model work for your species? Save the plots to your folder.
 
 ------------------------------------------------------------------------
 
 ### Linear model
 
-There are other functions that can make linear models. A linear model is an equation that describes how the value of each of the climate variables in a particular spot on the map influences the likelihood that the species will occur in that spot.
+There are other ways to make a species distribution model than the function `bioclim`. One way is to develop a "linear model". The equation for a line (y = mx + b) is a linear model. In terms of species distributions, a linear model is an equation that describes how the value of each of the climate variables in a particular spot on the map influences the likelihood that the species will occur in that spot.
 
-To use them we're going to need to make some points in places where your species *isn't* present (or at least has not been documented to occur), so that we can compare them to the places where the species was actually found. The other model just used the background.
+To develop a linear model we're going to need to make some points in places where your species *isn't* present (or at least has not been documented to occur), so that we can compare them to the places where the species was actually found. The other model just used the whole background supplied by the maps of climate.
 
-First, get the values of the climate variables at the location of each of the species occurrences with the function `extract` from the `raster` package. This function takes two arguments, a RasterStack and a set of coordinates (GPS points), and returns a matrix of all the climate variables at all the locations.
+First, get the values of the climate variables at the location of each of the known species occurrences with the function `extract` from the `raster` package. This function takes two arguments, a RasterStack (ie, the object `climate`) and a set of coordinates (GPS points, ie, the object `df`), and returns a matrix of all the climate variables at all the locations.
 
 ```{r}
 presvals <- extract(climate, df[,c("lon","lat")])
@@ -119,7 +132,9 @@ presvals <- presvals[,-which(names(presvals) == "ID")]
 dim(presvals)
 ```
 
-Now we need to make up some long/lat points for absence data -- we'll just use 1000 or the number of presence points, whichever is greater.
+Now we need to make up some long/lat points for absence data -- we'll try to use approximately use 1000 or the number of presence points, whichever is greater (though if you have more than 10,000 presence points, don't use more than that). For the blue morphos, there are 561 presence points, so I will develop a dataset with 1000 absence points.
+
+Here, we are "masking" out (not using) any point that has a known occurrence in it, and only choosing other points.
 ```{r}
 set.seed(0) #initialize random number generator
 backgr  <-  randomPoints(mask = raster(climate$bio1), n = max(nrow(df),1000), 
@@ -138,7 +153,7 @@ points(transform_lon(backgr[,"x"]),backgr[,"y"],col = "lightblue", pch = 20)
 points(transform_lon(df[,"lon"]),df[,"lat"],col = "red",pch = 20)
 ```
 
-The blue circles are the fake long/lat points that we just made up for locations where the species is not documented to occur. We'll extract these "absent" climate values and assemble them into a table with the "presence" values.
+The blue circles are the fake long/lat points that we just made up for locations where the species is not documented to occur. We'll extract the climate values at these "absence" points and assemble them into a table with the "presence" values.
 
 ```{r}
 absvals <- extract(climate, backgr) #extract climate values at those points
@@ -160,21 +175,26 @@ This is a linear model, so you can look at the p-values to assess whether each v
 #element 0 is the intercept (predicted value if all climate variables are zero)
 summary(m2)
 pvalues <- summary(m2)$coefficients[,4]
-plot(pvalues, type = "n"); text(pvalues, labels = 0:19)
+plot(pvalues, type = "n"); text(pvalues, labels = 0:19); segments(0, 0.05, 21, 0.05, col="red", lty=2)
+# The red dashed line indicates p = 0.05, which is a traditional p-value 'cutoff' for assessing statistical  significance.
 ```
 
 For my butterflies, the most predictive climate variables are:
 
--   bio1 (average daily temperature)
--   bio2 (average daily temperature range) (somewhat less significant)
--   bio4 (summer/winter temperature difference)
--   bio10 (average summer temperature) (somewhat less significant)
--   bio11 (average winter temperature)
+-   bio2 (average daily temperature range) (somewhat less significant) *
+-   bio3 (Isothermality (BIO2/BIO7) (×100)) ***
+-   bio8 (Mean Temperature of Wettest Quarter) **
+-   bio12 (Annual Precipitation) ***
+-   bio13 (Precipitation of Wettest Month) ***
+-   bio16 (Precipitation of Wettest Quarter) **
+-   bio17 (Precipitation of Driest Quarter) *
+-   bio19 (Precipitation of Coldest Quarter) *
 
-But which direction does the influence of these variables go? Change the predictor names in "plotpredictors" to the most predictive climate variables for your species, then run the following code to generate box plots. These will let you check whether higher or lower values of the predictor are associated with species occurrence.
+
+But which direction does the influence of these variables go? Change the predictor names in "plotpredictors" to the most predictive climate variables for your species, then run the following code to generate box plots. Here, I'm just choosing the most significant variables: bio3, bio12, bio13. These will let you check whether higher or lower values of the predictor are associated with species occurrence.
 
 ```{r}
-plotpredictors <- c("bio1", "bio2", "bio4", "bio10", "bio11")
+plotpredictors <- c("bio3", "bio12", "bio13")
 par(mfrow=c(1,length(plotpredictors)))
 for (i in plotpredictors){
   boxplot(sdmdata[[i]] ~ sdmdata$pb, 
@@ -184,7 +204,7 @@ for (i in plotpredictors){
 }
 ```
 
-In these box plots, the points with x = 1 show the values of the predictor at the real occurrence points, while points with x = 0 show the values of the predictor variable at each of the fake absence points that we added. For my example species, compared to the absence points scattered across the rest of Central and South America, the presence points have a narrower range of values for these three significant variables. They prefer high temperatures overall (bio1), in both summer and winter (bio10, bio11), with low daily and annual temperature variation (bio2, bio4). In other words, it seems like blue morpho butterflies like living in the tropics because the tropics has very warm and very stable temperatures, and the amount of precipitation doesn't matter as much to them.
+In these box plots, the points with x = 1 show the values of the predictor at the real occurrence points, while points with x = 0 show the values of the predictor variable at each of the fake absence points that we added. For my example species, compared to the absence points scattered across the rest of Central and South America, the presence points have a narrower range of values for these three significant variables. They prefer high isothermality (bio3, places with relatively high daily temperature fluctuations), high precipitation overall (bio12) and especially precipitation in the wettest month (bio13). In other words, it seems like blue morpho butterflies like living in the tropics because the tropics are wet, and they particularly like areas with fluctuating temperatures. 
 
 ------------------------------------------------------------------------
 
@@ -396,7 +416,7 @@ In the *Microtus pennsylvanicus* example, the vole's range shifts northward thro
 
 ## Predicting species distributions past and future
 
-We can make a linear model of the climate envelope just like before. This time we'll use all three of the time intervals for which we have data (LGM, mid-Holocene, and modern) to make our predictions.
+We can make a linear model of the species distribution just like before. This time we'll use all three of the time intervals for which we have data (LGM, mid-Holocene, and modern) to make our predictions.
 
 ```{r}
 presvals22k <- extract(lgm, data_lgm[,c("long","lat")])
