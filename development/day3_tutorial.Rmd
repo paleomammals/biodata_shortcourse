@@ -1,8 +1,12 @@
 ---
-title: "Day 2"
-author: "Val Syverson"
+title: "Day 3"
+author: "Val Syverson, with updates by Jessica Blois"
 date: "`r Sys.Date()`"
-output: html_document
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: united
 ---
 
 ```{r setup, include = FALSE}

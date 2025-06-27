@@ -1,6 +1,6 @@
 # biodata_shortcourse
 
-This repository contains the tutorial files for an introductory workshop in species distribution modeling and forecasting in R using data from GBIF and NeotomaDB. This course was taught in summer 2023 and 2024 by Val Syverson and Nat Brown, under the title "Data Science for Nature Conservation", at [UC Merced Bobcat Summer STEM Academy](https://calteach.ucmerced.edu/bobcat-summer-stem-academy). The development of this workshop was funded by [NSF Award #2149416](https://www.nsf.gov/awardsearch/showAward?AWD_ID=2149416&HistoricalAwards=false).
+This repository contains the tutorial files for an introductory workshop in species distribution modeling and forecasting in R using data from GBIF and NeotomaDB. This course was taught in summer 2023 and 2024 by Val Syverson and Nat Brown and in 2025 by Jessica Blois and Nat Brown, under the title "Data Science for Nature Conservation", at [UC Merced Bobcat Summer STEM Academy](https://calteach.ucmerced.edu/bobcat-summer-stem-academy). The development of this workshop was funded by [NSF Award #2149416](https://www.nsf.gov/awardsearch/showAward?AWD_ID=2149416&HistoricalAwards=false).
 
 ## Downloading and using the course materials
 To use these course files, clone the repo and follow along with the instructions in "day1_tutorial.html" and "day2_tutorial.html". These will call the other files in the main folder and in 'paleoclimate'. The empty folder 'temp' is also necessary.
@@ -8,7 +8,7 @@ To use these course files, clone the repo and follow along with the instructions
 The 'development' folder contains files that were used to create the other files, and should be of no concern to most users.
 
 ## Structure of the course
-This lesson plan reflects how the course was taught as a three-day workshop in 2024.
+This lesson plan is for a three-day workshop, and reflects how the course was taught in 2024 and 2025.
 
 ### Day 1
 Students should follow along with the instructions in "day1_tutorial.html".
