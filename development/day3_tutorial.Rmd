@@ -13,44 +13,41 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Today we'll explore further into what we can do with species distribution modeling.
 
-# Part 1. Extending your model with land use data
+# Reminder: Day 3 Schedule
+9:05-10:20 - Session 1
+- Library research
 
-Once again, load your workspace from yesterday: go to the Documents folder, choose the .Rdata file that you saved yesterday afternoon, and open it in RStudio. It should look exactly like it did yesterday (i.e. it should contain the objects from yesterday's models).
+10:20-10:30 - Snack Time 
 
-Run the package installation script again to load the packages you need.
+10:30-11:55 - Session 2
+- Develop presentations
 
-```{r,eval = F}
-source("installscript.R")
-```
+12:00-12:45pm - Lunch @ Pavilion 
 
-```{r,echo = F}
-load(file = "day2.RData")
-```
+1:00-3:15 - Session 3
+- 1 - 1:40pm Continue to develop presentations
+- 1:40 - 3pm Presentations (8 students, 10 minutes per student)
+- 3 - 3:15pm Close, save work, wrap up for the week
 
-```{r}
-require(geodata);require(dismo);require(maps);require(here); require(sf); require(concaveman)
-```
+-----------------------------------------
 
+# Part 1. Additional Research
 
-```{r}
-sfdata <- st_as_sf(data_now,coords = c("lon","lat")) #this reformats the coordinate points into a special data structure
-conc <- concaveman(sfdata,concavity = 3,length_threshold = 0) #this is called a concave hull, it's a polygon that contains all the points
-conv <- convHull(data_now) #this is called a convex hull, it's just a polygon drawn around all the points that stick out the most
-```
+We will each do some additional research on our chosen species. 
+Then, we will create a short presentation and share our model and our information with our classmates.
 
-```{r}
-xrange <- range(c(data_lgm$lon,data_midH$lon,data_now$lon),na.rm = T) + c(-5,5)
-yrange <- range(c(data_lgm$lat,data_midH$lat,data_now$lat),na.rm = T) + c(-5,5)
+# Part 2. Developing your presentations
 
-plot(prednow, main = "today",xlim = xrange,ylim = yrange)
-points(data_now$lon,data_now$lat,col = "maroon1",pch = 20,cex = 0.8)
-plot(conv,add = T,col = rgb(0,0,0,0.3),lty = "blank")
-plot(conc,add = T,col = rgb(0,1,1,0.3),lty = "blank")
-```
+Information on the presentations can be found in two places:
 
-```{r}
-footprint <- footprint(year = "2009",path = tempdir())
-```
+-  in the main folder, the pptx file: 'student presentation template.pptx'
+-  as a [google slide](https://docs.google.com/presentation/d/1o4f_QJzVbWnPupCB0Mv7D9BHgdHAWNOUGNpuv2k_Oec/edit?usp=sharing)
+
+To complete the presentation, you may need to reload your saved workspaces from Day 2 and Day 3 if you didn't save your plots, or otherwise you can regenerate the plots using the Day 1 and Day 2 tutorials.
+
+# Part 3. Sharing your presentations
+
+Each student will give a short presentation on their chosen species. Each student will have roughly 10 minutes to present their work.
+
 

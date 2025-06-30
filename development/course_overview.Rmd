@@ -17,6 +17,14 @@ knitr::opts_chunk$set(echo = TRUE)
 
 When the environment changes, organisms can either move, adapt, or die out. Over the next three days, we’ll use the open source program R to analyze ecological and climatic data, explore how species’ geographic ranges shifted as climate changed in the past, and predict what might happen to them with future climate change.
 
+Our specific goal is to introduce students to a data science approach to species conservation, especially the following:
+
+- introduce the programming environment R
+- learn how to clean messy data
+- learn about common data used for species conservation (species occurrences) and an online tool that stores such data
+- introduce the concept of 'species distribution modeling' and how it can be used to examine species range shifts through time.
+
+
 ## Instructors
 
 ### Dr. Jessica Blois
@@ -52,23 +60,29 @@ We will be using a program called R for our programming, with a graphical userfa
 
 ### Day 2
 9:05-10:20 - Session 1
+- Day 2 Tutorial, Part 1
 
 10:20-10:30 - Snack Time 
 
 10:30-11:55 - Session 2
+- Day 2 Tutorial, Part 1 continued
 
 12:00-12:45pm - Lunch @ Pavilion 
 
 1:00-3:15 - Session 3
+- 1:00 - 3:00pm Day 2 Tutorial, Parts 2-3
+- 3:00 - 3:15pm Day 2 Tutorial. Part 4, save your work
 
 ### Day 3
 9:05-10:20 - Session 1
+- Library research
 
 10:20-10:30 - Snack Time 
 
 10:30-11:55 - Session 2
+- Develop presentations
 
 12:00-12:45pm - Lunch @ Pavilion 
 
 1:00-3:15 - Session 3
-
+- Presentations

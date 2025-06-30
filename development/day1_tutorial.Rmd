@@ -13,6 +13,23 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Reminder: Day 1 Schedule
+#### 9:05-10:20 - Session 1
+- 9:05 - 9:30am Introductions & Course Overview
+- 9:30 - 10:20am Day 1 Tutorial. Parts 1 & 2
+
+#### 10:20-10:30 - Snack Time 
+
+#### 10:30-11:55 - Session 2
+- Day 1 Tutorial. Wrap up Part 2 and start Part 3
+
+#### 12:00-12:45pm - Lunch @ Pavilion 
+
+#### 1:00-3:15 - Session 3
+- 1:00 - 3:00pm Day 1 Tutorial. Parts 3 and 4
+- 3:00 - 3:15pm Day 1 Tutorial. Part 5, save your work
+
+# Part 0. Giving credit
 This tutorial is based on two sources:
 
 1.  <https://hbctraining.github.io/Training-modules/IntroR/> by Meeta Mistry, Mary Piper, and Radhika Khetani
@@ -563,9 +580,9 @@ mean(subset(iris,Species == "virginica")$Petal.Width)
 
 # Part 3: Species ranges from GBIF data
 
-In this section, we will create a map that shows everywhere on earth that a species has been found. We each can choose our own species. The examples will be done using the species *Morpho menelaus*, the blue morpho butterfly. Wherever you see its name, you'll substitute your own species' name.
+In this section, we will create a map that shows everywhere on earth that a species has been found. We each can choose our own species, using the options in the file "Species List for Day 1.xlsx". The examples will be done using the species *Morpho menelaus*, the blue morpho butterfly. Wherever you see its name, you'll substitute your own species' name.
 
-Step 1: Choose your favorite species. The function `gbif` requires the scientific name of the species. So, if you don't know it, open up your web browser and search for the scientific name. Example search: "blue morpho butterfly scientific name". Note that there are several different species, all of which have the common name "Blue morpho", which is one reason it's more precise to use the scientific names!
+Step 1: Choose your favorite species from the list. The function `gbif` requires the scientific name of the species. So, if you don't know it, open up your web browser and search for the scientific name. Example search: "blue morpho butterfly scientific name". Note that there are several different species, all of which have the common name "Blue morpho", which is one reason it's more precise to use the scientific names!
 
 For this species, *Morpho menelaus*, *Morpho* is the genus and *menelaus* is called the specific epithet (species indicator).
 
