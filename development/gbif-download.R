@@ -1,4 +1,6 @@
-#download GBIF data for last exercise
+#download GBIF data for last exercise in day 2
+#produces "gbif-raw.RData"
+#to use the output, filter the results for each species using the filtering scheme used in day 1 tutorial
 names<-c("Microtus pennsylvanicus", "Lynx rufus", "Lontra canadensis", 
          "Marmota flaviventris", "Erethizon dorsatum", 
          "Bison bison", "Blarina brevicauda", "Lepus californicus")

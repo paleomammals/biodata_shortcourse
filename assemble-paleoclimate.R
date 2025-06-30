@@ -1,4 +1,5 @@
 #assemble climate layers into rasterstacks
+#produces "climatelayers.RData"
 require(raster); require(terra); require(here); require(geodata)
 
 #Last glacial maximum, 22ka
