@@ -1,0 +1,74 @@
+---
+title: "Workshop Overview"
+author: "Jessica Blois"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: united
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Course Goals
+
+When the environment changes, organisms can either move, adapt, or die out. Over the next three days, we’ll use the open source program R to analyze ecological and climatic data, explore how species’ geographic ranges shifted as climate changed in the past, and predict what might happen to them with future climate change.
+
+## Instructors
+
+### Dr. Jessica Blois
+Jessica is a Professor of Biology and Environmental System Science at UC Merced. Her research focuses on how mammals and vegetation respond to environmental and climatic change in the  past, present, and future climate changes. She gets out into the field and hikes around the Sierra Nevada mountains looking for living small mammals (think squirrels, voles, mice, etc) and she also digs into the sediment in search of fossils - both animal remains as well as bits and pieces of past plant life. She teaches classes like "Fundamentals of Organismal Biology" and "Paleoecology" and loves to work with students at UC Merced.
+
+### Nathaniel Brown
+
+
+## Schedule
+
+### Logistics
+We will work each day in COB1 281, following the overall Bobcat Summer STEM Academy schedule.
+
+Each computer has a folder in the network drive, which is labeled with the class name ('Data Science for Nature and Conservation').  All files can be found here.
+
+We will be using a program called R for our programming, with a graphical userface called "RStudio" that makes navigating R much easier. Each person has both R and RStudio installed on your computer, but you only really need to 'interact' with RStudio.
+
+### Day 1
+#### 9:05-10:20 - Session 1
+- 9:05 - 9:30am Introductions & Course Overview
+- 9:30 - 10:20am Day 1 Tutorial. Parts 1 & 2
+
+#### 10:20-10:30 - Snack Time 
+
+#### 10:30-11:55 - Session 2
+- Day 1 Tutorial. Wrap up Part 2 and start Part 3
+
+#### 12:00-12:45pm - Lunch @ Pavilion 
+
+#### 1:00-3:15 - Session 3
+- 1:00 - 3:00pm Day 1 Tutorial. Parts 3 and 4
+- 3:00 - 3:15pm Day 1 Tutorial. Part 5, save your work
+
+### Day 2
+9:05-10:20 - Session 1
+
+10:20-10:30 - Snack Time 
+
+10:30-11:55 - Session 2
+
+12:00-12:45pm - Lunch @ Pavilion 
+
+1:00-3:15 - Session 3
+
+### Day 3
+9:05-10:20 - Session 1
+
+10:20-10:30 - Snack Time 
+
+10:30-11:55 - Session 2
+
+12:00-12:45pm - Lunch @ Pavilion 
+
+1:00-3:15 - Session 3
+
