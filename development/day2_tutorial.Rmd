@@ -13,6 +13,22 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Reminder: Day 2 Schedule
+
+9:05-10:20 - Session 1
+- Day 2 Tutorial, Part 1
+
+10:20-10:30 - Snack Time 
+
+10:30-11:55 - Session 2
+- Day 2 Tutorial, Part 1 continued
+
+12:00-12:45pm - Lunch @ Pavilion 
+
+1:00-3:15 - Session 3
+- 1:00 - 3:00pm Day 2 Tutorial, Parts 2-3
+- 3:00 - 3:15pm Day 2 Tutorial. Part 4, save your work
+
 # Part 1. Mathematical modeling
 
 First make sure your workspace from yesterday is loaded. There are several options for doing this:
@@ -84,7 +100,7 @@ We will save and reload this file to get it out of RAM:
 We can plot the predicted 'climate suitability' (a prediction of the species distribution) just like we plotted the bioclim environmental layers:
 
 ```{r}
-plot(p, main = "Bioclim model", plg=list(x="right", title="Suitability"))
+plot(p, main = "Bioclim model", plg=list(x="right", title="Suitability")) # this line of code takes a minute or two to run.
 ```
 
 The suitability score ranges from 0 to 1. A point that had a suitability of 1 would have all its climate values exactly at the median values for the occurrence points, so that doesn't usually happen; the highest values in this model are around 0.6.
@@ -246,11 +262,11 @@ The difference between the `bioclim` model and the `glm` model, other than the s
 Higher value at a point on the map indicates that the model "thinks" the climate at that point is a good match for what the species likes (i.e. high habitat suitability). The maps we made show the locations of the actual occurrences, which lets you visually assess whether the real observations were found in places where the species is "expected" to live. Let's try assessing this quantitatively now, by extracting the values of the *model predictions* at the observation locations and seeing whether each model is accurately predicting where the species has been observed.
 
 ```{r}
-modelmatch <- data.frame(bioclim = extract(p, df[,c("lon","lat")]),
-                         linear = extract(q, df[,c("lon","lat")]))
+modelmatch <- data.frame(bioclim = extract(p, df[,c("lon","lat")])[,'lyr1'],
+                         linear = extract(q, df[,c("lon","lat")])[,'lyr1'])
 ```
 
-Plot histograms of the results to compare them.
+Plot histograms of the results to compare them. 
 
 ```{r}
 par(mfrow = c(2,1), mar = c(1,0,1,0))
@@ -259,7 +275,7 @@ legend("topright",legend = names(modelmatch), col = c("darkblue","turquoise"), p
 hist(na.omit(modelmatch$linear/max(modelmatch$linear,na.rm = T)), col = "turquoise", main = "")
 ```
 
-This plot summarizes the habitat suitability values at the real occurrence points for each model. You can see that for /Morpho menelaus/, the values in the bioclim model are lower, and the linear values are moderate. That is: the bioclim model did the worst job of predicting habitat suitability at the points where a blue morpho butterfly was seen, and the linear model did better. 
+This plot summarizes the climate suitability values at the real occurrence points for each model. You can see that for *Morpho menelaus*, the values in the bioclim model are relatively lower, and the linear values are moderate. That is: the bioclim model did a worse job of predicting habitat suitability at the points where a blue morpho butterfly was seen, and the linear model did better (but maybe not great). 
 
 ------------------------------------------------------------------------
 
@@ -282,9 +298,9 @@ load(here("climatemodel.RData"))
 
 # Part 2. Climate change and environmental variables
 
-So far we've used only modern climate data and occurrences. However, we know that climate changes over time: 22,000 years ago we were in an ice age, and many species were present in very different places. Climate scientists have produced very detailed maps of the climatic conditions on Earth in the relatively recent past (especially for the last 3 million years or so). What can we do with estimates of /past/ climate -- that is, /paleoclimate/?
+So far we've used only modern climate data and occurrences. However, we know that climate changes over time: 22,000 years ago we were in an ice age, and many species occurred in very different places than they are found today. Climate scientists have produced very detailed maps of the climatic conditions on Earth in the relatively recent past (especially for the last 3 million years or so). What can we do with estimates of *past* climate -- that is, *paleoclimate*?
 
-In this section you are going to be introduced to paleoclimate data sets. We'll start by examining the mean annual temperature for your current location (UC Merced) in the past, present, and projected future, and then you'll do the same for another location that you choose yourself.
+In this section you are going to be introduced to paleoclimate data sets. We'll start by examining the mean annual temperature for your current location (UC Merced) in the past and present (and also for the projected future), and then you'll do the same for another location that you choose yourself.
 
 To load the paleoclimate and future climate data, run the following:
 
@@ -292,8 +308,13 @@ To load the paleoclimate and future climate data, run the following:
 source("assemble-paleoclimate.R")
 ```
 
-Examine the objects that it just loaded. These are four RasterStacks: `lgm` (Last Glacial Maximum, about 22,000 years ago), `midH` (Mid-Holocene, about 6000 years ago), `modern` (2000 CE), and `future` (projected climate for 2070 CE).
+Examine the objects that it just loaded. These are four RasterStacks: `lgm` (Last Glacial Maximum, about 22,000 years ago), `midH` (Mid-Holocene, about 6000 years ago), `modern` (2000 CE), and `future` (projected climate for 2070 CE). Example code is below, for the LGM.
 
+```{r}
+str(lgm)
+plot(lgm)
+plot(lgm[[1]])
+```
 ## Getting longitude and latitude data
 
 Google "UC Merced GPS coordinates" to find that the place where you're sitting right now is at longitude 120.42 W, latitude 37.36 N. That is:
@@ -322,7 +343,7 @@ climate_UCM
 
 ## Plotting temperature by time
 
-Remember how bioclim variable 1 is mean annual temperature? If you want to see how mean annual temperature at our current location has changed in the last 22,000 years, you can do that now. Let's plot only that first variable from each of these.
+Remember how bioclim variable 1 is mean annual temperature? If you want to see how mean annual temperature at our current location has changed in the last 22,000 years, you can do that now. Let's plot only that first variable from each of the different time periods.
 
 ```{r}
 plot(climate_UCM$bio1)
@@ -358,9 +379,14 @@ Think of another place on Earth that you feel connected to. (The place where you
 2.  Use `extract()` to get the values of the bioclimate variables at that location for all four points in time.
 3.  Plot the mean annual temperature versus time in your new place, and whichever other bioclimate variables you like. Save the plots to your folder and show them to the instructor.
 
-# Part 4. Modeling with paleoclimate data
+------------------------------------------------------------------------
 
-Now that you've looked at both paleoclimate data and paleobiological data, we can put them together to predict future species distributions. We're going to use the Maxent model because it usually makes the best predictions.
+
+# Part 3. Modeling with paleoclimate data
+
+Now that you've looked at both paleoclimate data and paleobiological data, we can put them together to predict future species distributions. We're going to use the linear model because it worked the best for the last species we tested, but for scientific research, we would usually develop several different models to determine which works best for a specific species.
+
+*Note:* It may be helpful to save/export each of the plots we generate below for use on Day 3 (as jpeg, png, or tiff files). If you do so, make sure to give your files descriptive names so that you know what the plot is showing. 
 
 ## Loading the fossil occurrence data
 
@@ -371,7 +397,19 @@ names(neotoma_lonlat)
 names(gbif)
 ```
 
-Find the organism you investigated in part 3 in the list of names. For the example organism, I'm going to use *Microtus pennsylvanicus* which is number 1 in both these lists, but you should use a different one. Assign the index of your organism in the list to `index`.
+Choose an organism to investigate in this part. 
+
+You can choose from one of the following species:
+1.   *Microtus pennsylvanicus* (Eastern meadow vole)
+2.   *Lynx rufus* (Bobcat)
+3.   *Lontra canadensis* (North American river otter)
+4.   *Marmota flaviventris* (Yellow-bellied marmot)
+5.   *Erethizon dorsatum* (North American porcupine)
+6.   *Bison bison* (American bison)
+7.   *Blarina brevicauda* (Northern short-tailed shrew)
+8.   *Lepus californicus* (black-tailed jackrabbit)
+
+For the example organism, I'm going to use *Microtus pennsylvanicus* which is number 1 in this list, but you should use a different one. Assign the index of your organism in the list to `index`.
 
 ```{r}
 index <- 1
@@ -408,6 +446,8 @@ legend(x = "bottomleft",legend = c("22,000ybp (LGM)","6,000ybp (Mid-Holocene","P
 
 In the *Microtus pennsylvanicus* example, the vole's range shifts northward through each step.
 
+*Note:* Do you want to save this plot? If so, give it a descriptive filename and save it for future viewing! For example, the plot below could be saved as: [Yourname]_[SpeciesName]_occurences_through_time.png
+
 ------------------------------------------------------------------------
 
 **Question:** Judging the map for your species by eye the same way, do you see a shift in its distribution? What seems to be changing?
@@ -438,7 +478,7 @@ sdmdata <- data.frame(cbind(pb, rbind(presvals, absvals))) #bind the presence an
 colnames(sdmdata) <- c("pb",names(modern))
 ```
 
-Generate the habitat suitability model using the "glm" function, which performed better last time.
+Generate the habitat suitability model using the "glm" function.
 
 ```{r}
 mod <- glm(pb ~ bio1 + bio2 + bio3 + bio4 + bio5 + bio6 + bio7 + bio8 + bio9 + bio10 + bio11 + bio12 + bio13 + bio14 + bio15 + bio16 + bio17 + bio18 + bio19, data = sdmdata)
@@ -471,6 +511,8 @@ points(data_now$lon,data_now$lat,col = "maroon1",pch = 20,cex = 0.8)
 plot(pred2070, main = "2070 CE",xlim = xrange,ylim = yrange)
 ```
 
+*Note:* do you want to save/export this plot? If so, go ahead and do that right now.
+
 ------------------------------------------------------------------------
 
 My example species *Microtus pennsylvanicus* has had its range expand northward, and the climate variable projections suggest that we should expect this trend to continue. Suitable habitats at the LGM are confined to the South, and as the climate warms and the ice sheets disappear, more habitat is suitable in northern Canada. However, in the 2070 prediction, the current southern part of the range is less green, indicating that it will be less suitable habitat in the near future.
@@ -480,3 +522,14 @@ My example species *Microtus pennsylvanicus* has had its range expand northward,
 **Question:** What about your species? What has happened to its range since the last ice age ended, and what do you expect to happen to it by 2070? Do you expect it to be one of the winners or the losers of climate change?
 
 ------------------------------------------------------------------------
+
+# Part 4. Saving your data
+
+Save your data so you can load it again tomorrow. This is not straightforward on UC Merced computer lab computers, so please follow ALL of the following steps:
+
+1.  Choose Session\>Save Workspace As...
+2.  In the popup window, choose Documents from the list on the left side under Quick Access.
+3.  Give the file a UNIQUE name with YOUR NAME in it and click Save. For example, a good file name would be: Blois_Day2.RData (but replace "Blois" with your name!)
+
+Your instructor will make sure these files are here for you to load tomorrow morning.
+
