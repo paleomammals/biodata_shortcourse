@@ -70,7 +70,7 @@ The RStudio interface has four main panels:
 
 ![Screenshot of the RStudio panels](images/R Console Screenshot.png)\
   
-First you're going to use the script editor (top left panel). Click "Source" in the top right of this panel to run the "installscript.R" script, which will install all the libraries you'll need for this course. While it's running, look at the other panels too.
+First you're going to use the script editor (top left panel). Click "Source" in the top right of this panel to run the "installscript.R" script, which will install all the libraries and custom functions you'll need for this course. While it's running, look at the other panels too.
 
 Next find the **console** (the bottom left panel). When you type something into this command-line interface and hit Enter, the text you entered will be run in the R processor and the results will be returned. Right now you'll see a bunch of text scrolling by as it installs the packages.
 
@@ -710,7 +710,7 @@ Recall what you know about your species' range. Do any of these occurrences look
 
 Data 'cleaning' is particularly important for data sourced from species distribution data warehouses such as GBIF. Such efforts do not specifically gather data for the purpose of species distribution modeling, so you need to understand the data and clean them appropriately, for your application.
 
-My example species, the blue morpho butterfly *Morpho menelaus*, lives in South and Central American tropical rainforests. The points in Northern Europe seem pretty suspicious, on that basis; maybe they're tagged incorrectly, and are actually captive individuals in a zoo, or even dead preserved specimens? Maybe someone incorrectly entered the latitute and longitude of the museum into the collection information? If you have data points in suspicious locations, take a look at them by filtering the latitude or longitude:
+My example species, the blue morpho butterfly *Morpho menelaus*, lives in South and Central American tropical rainforests. The points in Northern Europe seem pretty suspicious, on that basis; maybe they're tagged incorrectly, and are actually captive individuals in a zoo, or even dead preserved specimens? Maybe someone incorrectly entered the latitude and longitude of the museum into the collection information? If you have data points in suspicious locations, take a look at them by filtering the latitude or longitude:
 
 ```{r}
 test1  <-  which(df$lon360 < 250) #tagging all points that aren't in the Americas, by longitude
@@ -774,7 +774,7 @@ legend("topright",col = c(rgb(1,1,0,0.3),rgb(1,0,0,0.3)),
        legend = c("convex","concave"),pch = 15,bty = "n")
 ```
 
-This isn't very satisfactory as a map of species range, as it doesn't take any notice of whether your species could actually live in all the 'potentially unoccupied' places in between the points you plotted. In the next part we'll look at some environmental data to see if we can figure out a better way.
+This isn't very satisfactory as a map of species range, as it doesn't consider whether your species could actually live in all the 'potentially unoccupied' places in between the points you plotted. In the next part we'll look at some environmental data to see if we can figure out a better way.
 
 To save your map to your class file, click Export\>Save as Image. Give it a name that contains the species name and your name.
 

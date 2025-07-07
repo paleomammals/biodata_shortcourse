@@ -16,30 +16,23 @@ knitr::opts_chunk$set(echo = TRUE)
 # Reminder: Day 2 Schedule
 
 9:05-10:20 - Session 1
+
 - Day 2 Tutorial, Part 1
 
 10:20-10:30 - Snack Time 
 
 10:30-11:55 - Session 2
+
 - Day 2 Tutorial, Part 1 continued
 
 12:00-12:45pm - Lunch @ Pavilion 
 
 1:00-3:15 - Session 3
+
 - 1:00 - 3:00pm Day 2 Tutorial, Parts 2-3
 - 3:00 - 3:15pm Day 2 Tutorial. Part 4, save your work
 
 # Part 1. Mathematical modeling
-
-First make sure your workspace from yesterday is loaded. There are several options for doing this:
-- go to the Documents folder, choose the .Rdata file that you saved yesterday afternoon, and open it in RStudio. It should look exactly like it did yesterday when you left it.
-- Open RStudio, go to 'Session', then "Load Workspace". Navigate to your saved workspace and open it.
-- Load it directly within RStudio using the example code below.
-
-```{r, echo = T}
-load(file = "Blois_Day1.RData") # Replace the "Blois_Day1" with your filename. 
-```
-
 
 Run the package installation script again and load the packages you need for this morning.
 
@@ -52,7 +45,19 @@ source("installscript.R")
 require(geodata);require(dismo);require(maps);require(here)
 ```
 
-Because we can't be everywhere all the time, there are many dots on the map where a species is likely to occur, we just haven't observed it there yet. One way to predict where a species can be found is to build a model of the species distribution (also called the species range). 
+Now, make sure your workspace from yesterday is loaded. There are several options for doing this:
+- go to the Documents folder, choose the .Rdata file that you saved yesterday afternoon, and open it in RStudio. It should look exactly like it did yesterday when you left it.
+- Open RStudio, go to 'Session', then "Load Workspace". Navigate to your saved workspace and open it.
+- Load it directly within RStudio using the example code below.
+
+```{r, echo = T}
+load(file = "Blois_Day1.RData") # Replace the "Blois_Day1" with your filename. 
+```
+
+
+## Introduction to species distributions
+
+Knowledge about where a species occurs, and where it doesn't, is fundamental to conservation biology. Over the decades, scientists have collected a lot of different species occurrences - observations of a species at a particular place and time. But, because we can't be everywhere all the time, there are many dots on the map where a species is likely to occur, we just haven't observed it there yet. One way to predict where a species can be found is to build a model of the species distribution (also called the species range). 
 
 Today, we're going to use the climate data you downloaded and the species occurrence data you constructed yesterday to model (determine) the influence of the climate variables on your species' range.
 
@@ -60,7 +65,7 @@ Today, we're going to use the climate data you downloaded and the species occurr
 
 Species distribution models describe the climate where a species currently lives (its climate "envelope") based on the values at all its known occurrences, and then use that to predict the suitability of all the places it has not been observed at. We'll try two different ways of making a species distribution model.
 
-If you need to rebuild the `climate` raster stack, run the following lines:
+First, take a look at your environment to see if you have the Data object `climate` loaded from yesterday. If so, skip the next chunk of code. If you need to rebuild the `climate` raster stack, run the following lines:
 ```{r}
 climate <- worldclim_global(var = 'bio',res = 2.5,path = here())
 climate <- stack(climate)
@@ -89,18 +94,21 @@ m1 <- bioclim(stack(climate),df[,c("lon","lat")])
 Now that we have the relationship between climate variables and your species known occurrences, we can predict its likelihood of occurring for *every* point on the map using the `predict` function.
 
 ```{r}
-p <- predict(climate,m1,progress = "text")
+p <- predict(climate,m1,progress = "text") # this line of code takes a minute or two to run.
 ```
 
 We will save and reload this file to get it out of RAM:
 ```{r}
-# p <- reload_raster(p)
+p <- reload_raster(p)
 ```
 
 We can plot the predicted 'climate suitability' (a prediction of the species distribution) just like we plotted the bioclim environmental layers:
 
 ```{r}
-plot(p, main = "Bioclim model", plg=list(x="right", title="Suitability")) # this line of code takes a minute or two to run.
+plot(p, main = "Bioclim model", legend.args = list(text = 'Suitability', side = 4, 
+         font = 2, line = 2.5, cex = 0.8)) 
+
+
 ```
 
 The suitability score ranges from 0 to 1. A point that had a suitability of 1 would have all its climate values exactly at the median values for the occurrence points, so that doesn't usually happen; the highest values in this model are around 0.6.
@@ -113,7 +121,8 @@ yrange <- range(df$lat,na.rm = T) + c(-5,5)
 
 plot(p, main = "Bioclim model prediction",
   xlim = xrange, ylim = yrange,
-  plg=list(x="right", title="Suitability"))
+  legend.args = list(text = 'Suitability', side = 4, 
+         font = 2, line = 2.5, cex = 0.8)) 
 ```
 
 ...and also put in the occurrence points.
@@ -122,7 +131,8 @@ plot(p, main = "Bioclim model prediction",
 plot(p, main = "Bioclim model prediction with occurrences",
   xlim = range(df$lon,na.rm = T), 
   ylim = range(df$lat,na.rm = T),
-  plg=list(x="right", title="Suitability"))
+  legend.args = list(text = 'Suitability', side = 4, 
+         font = 2, line = 2.5, cex = 0.8)) 
 points(df$lon,df$lat,col = rgb(1,0,0,0.5),pch = 20,cex = 0.5) #make the points smaller so they don't get in the way too much
 ```
 
@@ -169,7 +179,7 @@ points(transform_lon(backgr[,"x"]),backgr[,"y"],col = "lightblue", pch = 20)
 points(transform_lon(df[,"lon"]),df[,"lat"],col = "red",pch = 20)
 ```
 
-The blue circles are the fake long/lat points that we just made up for locations where the species is not documented to occur. We'll extract the climate values at these "absence" points and assemble them into a table with the "presence" values.
+The blue circles are the "potential absence" long/lat points that we just made up for locations where the species is not documented to occur. We'll extract the climate values at these "absence" points and assemble them into a table with the "presence" values.
 
 ```{r}
 absvals <- extract(climate, backgr) #extract climate values at those points
@@ -220,7 +230,7 @@ for (i in plotpredictors){
 }
 ```
 
-In these box plots, the points with x = 1 show the values of the predictor at the real occurrence points, while points with x = 0 show the values of the predictor variable at each of the fake absence points that we added. For my example species, compared to the absence points scattered across the rest of Central and South America, the presence points have a narrower range of values for these three significant variables. They prefer high isothermality (bio3, places with relatively high daily temperature fluctuations), high precipitation overall (bio12) and especially precipitation in the wettest month (bio13). In other words, it seems like blue morpho butterflies like living in the tropics because the tropics are wet, and they particularly like areas with fluctuating temperatures. 
+In these box plots, the points with x = 1 show the values of the predictor at the real occurrence points, while points with x = 0 show the values of the predictor variable at each of the fake absence points that we added. For my example species, compared to the absence points scattered across the rest of Central and South America, the presence points usually have a narrower range of values for these three significant variables. They prefer high isothermality (bio3, places with relatively high daily temperature fluctuations), high precipitation overall (bio12) and especially precipitation in the wettest month (bio13). In other words, it seems like blue morpho butterflies like living in the tropics because the tropics are wet, and they particularly like areas with fluctuating temperatures. 
 
 ------------------------------------------------------------------------
 
@@ -236,7 +246,7 @@ q <- predict(climate,m2,progress = "text")
 Save and reload it:
 
 ```{r}
-#q <- reload_raster(q)
+q <- reload_raster(q)
 ```
 
 And plot it with the occurrence points:
@@ -262,8 +272,8 @@ The difference between the `bioclim` model and the `glm` model, other than the s
 Higher value at a point on the map indicates that the model "thinks" the climate at that point is a good match for what the species likes (i.e. high habitat suitability). The maps we made show the locations of the actual occurrences, which lets you visually assess whether the real observations were found in places where the species is "expected" to live. Let's try assessing this quantitatively now, by extracting the values of the *model predictions* at the observation locations and seeing whether each model is accurately predicting where the species has been observed.
 
 ```{r}
-modelmatch <- data.frame(bioclim = extract(p, df[,c("lon","lat")])[,'lyr1'],
-                         linear = extract(q, df[,c("lon","lat")])[,'lyr1'])
+modelmatch <- data.frame(bioclim = extract(p, df[,c("lon","lat")]),
+                         linear = extract(q, df[,c("lon","lat")]))
 ```
 
 Plot histograms of the results to compare them. 
@@ -397,7 +407,7 @@ names(neotoma_lonlat)
 names(gbif)
 ```
 
-Choose an organism to investigate in this part. 
+Open up the file `Species List for Day 2.xlsx` and take a look at the example species. Choose an organism to investigate in this part (we will try to spread out the species so we don't all chose the same species). 
 
 You can choose from one of the following species:
 1.   *Microtus pennsylvanicus* (Eastern meadow vole)
@@ -409,10 +419,10 @@ You can choose from one of the following species:
 7.   *Blarina brevicauda* (Northern short-tailed shrew)
 8.   *Lepus californicus* (black-tailed jackrabbit)
 
-For the example organism, I'm going to use *Microtus pennsylvanicus* which is number 1 in this list, but you should use a different one. Assign the index of your organism in the list to `index`.
+For the example organism, I'm going to use *Microtus pennsylvanicus* which is number 1 in this list, but you should use a different one. Assign the index (number) of your organism in the list to `index`.
 
 ```{r}
-index <- 1
+index <- 1 #replace 1 with your number here
 ```
 
 Now make new variables containing the localities for each time interval and unload the big data files you loaded:
@@ -441,10 +451,10 @@ points(transform_lon(data_now$lon),data_now$lat,col = "maroon1",pch = 20,cex = 0
 points(transform_lon(data_lgm$lon),data_lgm$lat,col = "blue",pch = 20,cex = 0.8)
 points(transform_lon(data_midH$lon),data_midH$lat,col = "darkorchid",pch = 20,cex = 0.8)
 #move the legend to a different corner by changing the value of the argument "x"
-legend(x = "bottomleft",legend = c("22,000ybp (LGM)","6,000ybp (Mid-Holocene","Present"),pch = 20,col = c("blue","darkorchid","maroon1"))
+legend(x = "bottomleft",legend = c("22,000 ybp (LGM)","6,000 ybp (Mid-Holocene)","Present"),pch = 20,col = c("blue","darkorchid","maroon1"), cex=0.75)
 ```
 
-In the *Microtus pennsylvanicus* example, the vole's range shifts northward through each step.
+In the *Microtus pennsylvanicus* example, the vole's range generally shifts northward through each step.
 
 *Note:* Do you want to save this plot? If so, give it a descriptive filename and save it for future viewing! For example, the plot below could be saved as: [Yourname]_[SpeciesName]_occurences_through_time.png
 
@@ -469,8 +479,8 @@ dim(presvals)
 Now we generate the background absence points and extract the climate variable values for them:
 ```{r}
 set.seed(0) #initialize random number generator
-backgr  <-  randomPoints(mask = modern, n = 5000, p = presvals)
-absvals <- rbind(extract(lgm, backgr),
+backgr  <-  randomPoints(mask = modern, n = 5000, p = presvals) #this step can take a long time
+absvals <- rbind(extract(lgm,backgr),
                  extract(midH,backgr),
                  extract(modern,backgr)) #extract climate values at those points
 pb <- c(rep(1, nrow(presvals)), rep(0, nrow(absvals))) #make a vector that indicates whether the species is present at that point or not
@@ -478,13 +488,13 @@ sdmdata <- data.frame(cbind(pb, rbind(presvals, absvals))) #bind the presence an
 colnames(sdmdata) <- c("pb",names(modern))
 ```
 
-Generate the habitat suitability model using the "glm" function.
+Generate the climate suitability model using the "glm" function.
 
 ```{r}
 mod <- glm(pb ~ bio1 + bio2 + bio3 + bio4 + bio5 + bio6 + bio7 + bio8 + bio9 + bio10 + bio11 + bio12 + bio13 + bio14 + bio15 + bio16 + bio17 + bio18 + bio19, data = sdmdata)
 ```
 
-Again we use the linear model to make estimates of climate suitability at every location on the map:
+Again we use the linear model to make estimates of climate suitability at every location on the map, for each of the time periods (LGM, mid-Holocene, today, and the future):
 
 ```{r}
 names(midH) <- names(lgm) <- names(future) <- names(modern)
