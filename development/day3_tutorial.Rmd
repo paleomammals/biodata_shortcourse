@@ -16,18 +16,21 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Reminder: Day 3 Schedule
 9:05-10:20 - Session 1
-- Library research
+
+- Part 1: Library research
 
 10:20-10:30 - Snack Time 
 
 10:30-11:55 - Session 2
-- Develop presentations
+
+- Part 2: Develop presentations
 
 12:00-12:45pm - Lunch @ Pavilion 
 
 1:00-3:15 - Session 3
-- 1 - 1:40pm Continue to develop presentations
-- 1:40 - 3pm Presentations (8 students, 10 minutes per student)
+
+- 1 - 1:40pm Part 2: Continue to develop presentations
+- 1:40 - 3pm Part 3: Presentations (8 students, 10 minutes per student)
 - 3 - 3:15pm Close, save work, wrap up for the week
 
 -----------------------------------------

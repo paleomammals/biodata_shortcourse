@@ -21,17 +21,17 @@ Our specific goal is to introduce students to a data science approach to species
 
 - introduce the programming environment R
 - learn how to clean messy data
-- learn about common data used for species conservation (species occurrences) and an online tool that stores such data
+- learn about common data used for species conservation (species occurrences) and an online tool that stores such data for species around the world (GBIF - the Global Biodiversity Information Facility)
 - introduce the concept of 'species distribution modeling' and how it can be used to examine species range shifts through time.
 
 
 ## Instructors
 
 ### Dr. Jessica Blois
-Jessica is a Professor of Biology and Environmental System Science at UC Merced. Her research focuses on how mammals and vegetation respond to environmental and climatic change in the  past, present, and future climate changes. She gets out into the field and hikes around the Sierra Nevada mountains looking for living small mammals (think squirrels, voles, mice, etc) and she also digs into the sediment in search of fossils - both animal remains as well as bits and pieces of past plant life. She teaches classes like "Fundamentals of Organismal Biology" and "Paleoecology" and loves to work with students at UC Merced.
+Jessica is a Professor of Biology and Environmental System Science at UC Merced. Her research focuses on how mammals and vegetation respond to environmental and climatic change in the  past, present, and future climate changes. She gets out into the field and hikes around the Sierra Nevada mountains looking for living small mammals (think squirrels, voles, mice, etc) and she also digs into the sediment in search of fossils - both animal remains as well as bits and pieces of past plant life. She teaches classes like "Fundamentals of Organismal Biology" and "Paleoecology" and loves to work with students at UC Merced. Learn more about her research at her [lab website](https://jessicablois.com/).
 
 ### Nathaniel Brown
-
+Nat is a PhD student in the Quantitative and Systems Biology graduate group at UC Merced, working in the [Xu Lab](https://xulab.ucmerced.edu/).
 
 ## Schedule
 
@@ -60,29 +60,43 @@ We will be using a program called R for our programming, with a graphical userfa
 
 ### Day 2
 9:05-10:20 - Session 1
+
 - Day 2 Tutorial, Part 1
 
 10:20-10:30 - Snack Time 
 
 10:30-11:55 - Session 2
+
 - Day 2 Tutorial, Part 1 continued
 
 12:00-12:45pm - Lunch @ Pavilion 
 
 1:00-3:15 - Session 3
+
 - 1:00 - 3:00pm Day 2 Tutorial, Parts 2-3
 - 3:00 - 3:15pm Day 2 Tutorial. Part 4, save your work
 
 ### Day 3
 9:05-10:20 - Session 1
-- Library research
+
+- Part 1: Library research
 
 10:20-10:30 - Snack Time 
 
 10:30-11:55 - Session 2
-- Develop presentations
+
+- Part 2: Develop presentations
 
 12:00-12:45pm - Lunch @ Pavilion 
 
 1:00-3:15 - Session 3
-- Presentations
+
+- 1 - 1:40pm Part 2: Continue to develop presentations
+- 1:40 - 3pm Part 3: Presentations (8 students, 10 minutes per student)
+- 3 - 3:15pm Close, save work, wrap up for the week
+
+## Getting Started
+1. Check out your computers – find the folder titled `Data Science for N&C` and open the folder. 
+2. Open up the file `course_overview.html` in your browser and follow along. There is an `.html` file prepared for each day with instructions for the daily activities.
+3. Make sure to save all your work and files into this same folder each day. 
+

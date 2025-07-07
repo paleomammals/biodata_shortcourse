@@ -19,3 +19,4 @@ reload_raster <- function(rasterlayer) {
   writeRaster(rasterlayer, filename = filestring, gdal = "COMPRESS=DEFLATE", overwrite = TRUE)
   return(raster(rast(filestring)))
 }
+
