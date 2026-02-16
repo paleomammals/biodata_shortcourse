@@ -24,16 +24,13 @@ The main course files are the following:
 
 ### To teach with these course files:
 1. Make sure the student computers have all necessary files 
-- Create a folder that contains all files in the folder 'biodata_shortcourse' except the 'development' subfolder
--- Note: The empty folder 'temp' is also necessary.
-- Copy this folder to the student computers.
--- It is essential to have an extra thumbdrive (or three) on hand, to transfer files to/from student computers
--- Note, this will need to be done daily. 
--- Also, at the end of the day, copy all student files to the thumbdrive(s) as a backup, because computers are wiped daily.
-- Direct students to open up and follow along with the .html files. Start with Course Overview.
-- Students can then follow along and copy-paste from the instructions in "day1_tutorial.html", "day2_tutorial.html", "day3_tutorial.html". 
--- Note: The daily tutorial files will call the other files in the main folder and in 'paleoclimate'. 
+- Create a folder that contains all files in the folder 'biodata_shortcourse' except the 'development' subfolder. Note: The empty folder 'temp' is also necessary.
+- Copy this folder to the student computers. Note, this will need to be done daily. Also, at the end of the day, copy all student files to the thumbdrive(s) as a backup, because computers are wiped daily.
 
+2. On your computer, open up and project the Course Overview html file (and then the tutorial files in turn). 
+- Direct students to open up and follow along with the .html files. 
+- Students can then follow along and copy-paste from the instructions in "day1_tutorial.html", "day2_tutorial.html", "day3_tutorial.html". 
+- Note: The daily tutorial files will call the other files in the main folder and in 'paleoclimate'. 
 
 
 ## Structure of the course
@@ -65,9 +62,13 @@ Students should load their data files from Day 1, and optionally their R environ
 
 ### Day 3
 There is not a detailed tutorial for Day 3 (it is mainly the daily schedule and information for the presentations). Instead, students can download the file "student presentation template.pptx" and use it to write up their presentation. Instructors are encouraged to customize this part of the lesson before students get to it. 
-- Student evaluations in Year 1 indicated that it was helpful to better contextualize the purpose of the data science exercises in the first two days, but researching and preparing these materials required a full day of work with substantial instructor support.
 - Research suggestions are given in the grey slides at the beginning; instructors should customize these to your own institutional resources.
 - The suggested content is given in the white slides; students should use these to guide their own short presentations of their results. 
+
+### Other notes:
+- Student evaluations in Year 1 indicated that it was helpful to better contextualize the purpose of the data science exercises in the first two days.
+- Time is tight, and researching and preparing these materials likely would require a full extra day of work with substantial instructor support.
+- There is a presentation saved in the repo titled 'paleomammals_ShortCourse.pptx'. This provides a bit of the context. It is not formally integrated into the schedule, but typically versions of this were fit into Day 1, right before lunch. 
 
 # Contacts
 For questions, please file issues on this github page or contact the lead authors: Val Syverson (vsyverson@gmail.com) or Jessica Blois (jblois@ucmerced.edu)
