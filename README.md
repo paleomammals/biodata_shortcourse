@@ -4,8 +4,8 @@ This repository contains the tutorial files for an introductory workshop in spec
 
 ## Downloading and using the course materials
 
-To modify these materials to deliver a new version of the course:
-1. Clone the repo.
+### To modify these materials to deliver a new version of the course:
+**1. Clone the repo.**
 
 The 'development' folder contains files that were used to create the other files
 
@@ -15,16 +15,26 @@ The main course files are the following:
 - day2_tutorial.Rmd
 - day3_tutorial.Rmd
 
-2. Use R and R Studio to edit these files as needed (ie, update instructor names, logistics section, etc in course_overview.html).
+**2. Use R and R Studio to edit these files as needed**
+(ie, update instructor names, logistics section, etc in course_overview.html).
 
-3. 'knit' the Rmd files to create html versions 
+**3. 'knit' the Rmd files to create html versions**
 
-4. Copy over the html
+**4. Copy over the html files to the main folder 'biodata_shortcourse'**
 
-To teach with these course files:
-- create a folder that contains all files 
+### To teach with these course files:
+1. Make sure the student computers have all necessary files 
+- Create a folder that contains all files in the folder 'biodata_shortcourse' except the 'development' subfolder
+-- Note: The empty folder 'temp' is also necessary.
+- Copy this folder to the student computers.
+-- It is essential to have an extra thumbdrive (or three) on hand, to transfer files to/from student computers
+-- Note, this will need to be done daily. 
+-- Also, at the end of the day, copy all student files to the thumbdrive(s) as a backup, because computers are wiped daily.
+- Direct students to open up and follow along with the .html files. Start with Course Overview.
+- Students can then follow along and copy-paste from the instructions in "day1_tutorial.html", "day2_tutorial.html", "day3_tutorial.html". 
+-- Note: The daily tutorial files will call the other files in the main folder and in 'paleoclimate'. 
 
-clone the repo and follow along with the instructions in "day1_tutorial.html" and "day2_tutorial.html". These will call the other files in the main folder and in 'paleoclimate'. The empty folder 'temp' is also necessary.
+
 
 ## Structure of the course
 This lesson plan is for a three-day workshop, and reflects how the course was taught in 2024 and 2025.
