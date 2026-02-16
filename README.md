@@ -1,11 +1,30 @@
-# biodata_shortcourse
+# Data Science for Nature Conservation
 
 This repository contains the tutorial files for an introductory workshop in species distribution modeling and forecasting in R using data from GBIF and NeotomaDB. This course was taught in summer 2023 and 2024 by Val Syverson and Nat Brown and in 2025 by Jessica Blois and Nat Brown, under the title "Data Science for Nature Conservation", at [UC Merced Bobcat Summer STEM Academy](https://calteach.ucmerced.edu/bobcat-summer-stem-academy). The development of this workshop was funded by [NSF Award #2149416](https://www.nsf.gov/awardsearch/showAward?AWD_ID=2149416&HistoricalAwards=false).
 
 ## Downloading and using the course materials
-To use these course files, clone the repo and follow along with the instructions in "day1_tutorial.html" and "day2_tutorial.html". These will call the other files in the main folder and in 'paleoclimate'. The empty folder 'temp' is also necessary.
 
-The 'development' folder contains files that were used to create the other files, and should be of no concern to most users.
+To modify these materials to deliver a new version of the course:
+1. Clone the repo.
+
+The 'development' folder contains files that were used to create the other files
+
+The main course files are the following:
+- course_overview.Rmd
+- day1_tutorial.Rmd
+- day2_tutorial.Rmd
+- day3_tutorial.Rmd
+
+2. Use R and R Studio to edit these files as needed (ie, update instructor names, logistics section, etc in course_overview.html).
+
+3. 'knit' the Rmd files to create html versions 
+
+4. Copy over the html
+
+To teach with these course files:
+- create a folder that contains all files 
+
+clone the repo and follow along with the instructions in "day1_tutorial.html" and "day2_tutorial.html". These will call the other files in the main folder and in 'paleoclimate'. The empty folder 'temp' is also necessary.
 
 ## Structure of the course
 This lesson plan is for a three-day workshop, and reflects how the course was taught in 2024 and 2025.
@@ -19,7 +38,7 @@ Students should follow along with the instructions in "day1_tutorial.html".
   - The coordinate filters used for the data cleaning steps will also need to be customized for the particular species, based on the preliminary mapping results. _Morpho menelaus_ has a South American distribution, so the points in Europe were excluded on the basis that they were probably captive specimens, but this is certainly not true for every species.
 - Part 4 calls modern bioclimatic data from the WorldClim API and maps them.
 
-Students should save the R environment and generated data and image files locally, in order to avoid redoing everything on day 2. The specifics of how to do this will vary depending on specifics of your classroom computer setup, so **no instructions are given for this part** in the tutorials.
+Students should save the R environment and generated data and image files locally, in order to avoid redoing everything on day 2. The specifics of how to do this will vary depending on specifics of your classroom computer setup, so **no instructions are given for this part** in the tutorials. Note that at UC Merced, all computer lab computers are wiped every night, so we found it easiest to copy the files for each student to a thumb drive, then reload those files to student computers in the morning.
 
 ### Day 2
 Students should load their data files from Day 1, and optionally their R environment file, and then follow along with the instructions in "day2_tutorial.html".
@@ -35,10 +54,10 @@ Students should load their data files from Day 1, and optionally their R environ
   -  The 'pred()' steps are slow. Students can use this time to move ahead into the Day 3 instructions and start drafting their presentations. 
 
 ### Day 3
-There is no tutorial for Day 3. Instead, students can download the file "student presentation template.pptx" and use it to write up their presentation. Instructors are encouraged to customize this part of the lesson before students get to it. 
-- Student evaluations indicated that it was helpful in contextualizing the purpose of the data science exercises in the first two days, but researching and preparing it required a full day of work with substantial instructor support.
+There is not a detailed tutorial for Day 3 (it is mainly the daily schedule and information for the presentations). Instead, students can download the file "student presentation template.pptx" and use it to write up their presentation. Instructors are encouraged to customize this part of the lesson before students get to it. 
+- Student evaluations in Year 1 indicated that it was helpful to better contextualize the purpose of the data science exercises in the first two days, but researching and preparing these materials required a full day of work with substantial instructor support.
 - Research suggestions are given in the grey slides at the beginning; instructors should customize these to your own institutional resources.
 - The suggested content is given in the white slides; students should use these to guide their own short presentations of their results. 
 
-# Contact
-For questions, please file issues on this github page or contact the lead author: Val Syverson (vsyverson@gmail.com)
+# Contacts
+For questions, please file issues on this github page or contact the lead authors: Val Syverson (vsyverson@gmail.com) or Jessica Blois (jblois@ucmerced.edu)

@@ -43,6 +43,8 @@ Each computer has a folder in the network drive, which is labeled with the class
 We will be using a program called R for our programming, with a graphical userface called "RStudio" that makes navigating R much easier. Each person has both R and RStudio installed on your computer, but you only really need to 'interact' with RStudio.
 
 ### Day 1
+We will start this day with an introduction to the course, then spend the rest of the morning learning how to use R. In the afternoon, we will learn about species geographic distributions. We will work with real, messy data; learn how to clean up and plot the data; and develop a simple range map for the species. We will also start to learn about and work with environmental data.
+
 #### 9:05-10:20 - Session 1
 - 9:05 - 9:30am Introductions & Course Overview
 - 9:30 - 10:20am Day 1 Tutorial. Parts 1 & 2
@@ -59,6 +61,8 @@ We will be using a program called R for our programming, with a graphical userfa
 - 3:00 - 3:15pm Day 1 Tutorial. Part 5, save your work
 
 ### Day 2
+We will learn how to develop a model that relates species occurrences in space to their environment, ie., a species distribution model. In the morning, we will do this using data for contemporary occurrences of species. In the afternoon, we will work with different species, for which we have fossil occurrences. We will first learn about paleoclimate, then we will build a species distribution model using data from three different time periods in the past. Then, we will use our model to make predictions about where the species was located in the past and in the future.  
+
 9:05-10:20 - Session 1
 
 - Day 2 Tutorial, Part 1
@@ -77,6 +81,8 @@ We will be using a program called R for our programming, with a graphical userfa
 - 3:00 - 3:15pm Day 2 Tutorial. Part 4, save your work
 
 ### Day 3
+On the final day, we will visit the library to see a fossil mammoth and different features of the library. We will then develop presentations about our species and finally present our results to the rest of the class.
+
 9:05-10:20 - Session 1
 
 - Part 1: Library research

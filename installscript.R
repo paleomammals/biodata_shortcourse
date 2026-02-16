@@ -20,3 +20,8 @@ reload_raster <- function(rasterlayer) {
   return(raster(rast(filestring)))
 }
 
+statMode <- function(x) {
+  ux <- unique(x)
+  tab <- tabulate(match(x, ux))
+  ux[tab == max(tab)]
+}
