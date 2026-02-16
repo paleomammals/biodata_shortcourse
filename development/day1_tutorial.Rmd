@@ -223,7 +223,7 @@ The table below provides examples of each of the commonly used data types:
 
 ### Data Structures
 
-We know that variables are like buckets, and so far we have seen that bucket filled with a single value. Even when `result`` was created, the result of the mathematical operation was a single value. **Variables can store more than just a single value, they can store a multitude of different data structures.** These include, but are not limited to, vectors (`c`), factors (`factor`), matrices (`matrix`), data frames (`data.frame`) and lists (`list`).
+We know that variables are like buckets, and so far?c we have seen that bucket filled with a single value. Even when `result` was created, the result of the mathematical operation was a single value. **Variables can store more than just a single value, they can store a multitude of different data structures.** These include, but are not limited to, vectors (`c`), factors (`factor`), matrices (`matrix`), data frames (`data.frame`) and lists (`list`).
 
 #### Vector
 
@@ -575,6 +575,11 @@ mean(subset(iris,Species == "virginica")$Petal.Width)
 1.  Which species has the *widest* petals? Examine the results to determine the answer.
 2.  Examine the code in more detail. Here, we have strung together several different functions, and are applying those functions to different sets of data. Do you understand what each element of the command is doing?
 3.  Which species has the *longest* petals? Does the same species have the widest and longest petals? Edit the script to find the answer.
+
+Now, let's try a quick plot of the data.
+```{r}
+boxplot(Petal.Length ~ Species, data=iris)
+```
 
 ------------------------------------------------------------------------
 
